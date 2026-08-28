@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PesaLoop — Turn Small Tasks Into Daily Pay</title>
+<meta name="description" content="Unlock earning programs, complete quick daily tasks, and cash out to M-Pesa. PesaLoop is your phone-powered side income.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#08201b;
+    --ink-2:#0e2b24;
+    --surface:#12362d;
+    --surface-2:#173f34;
+    --line: rgba(237,239,234,0.12);
+    --cream:#EDEFEA;
+    --muted:#8FA69C;
+    --green:#00C389;
+    --green-deep:#049167;
+    --gold:#F5B942;
+    --radius: 18px;
+    --maxw: 1160px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; letter-spacing:-0.01em; }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  ::selection{ background:var(--green); color:var(--ink); }
+ 
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+ 
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:100;
+    background:rgba(8,32,27,0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; max-width:var(--maxw); margin:0 auto;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.15rem; }
+  .logo-mark{
+    width:30px; height:30px; border-radius:8px;
+    background:linear-gradient(135deg, var(--green), var(--green-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; color:var(--ink); font-size:0.95rem;
+  }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a.navlink{ font-size:0.92rem; color:var(--muted); font-weight:500; transition:color .2s; }
+  .nav-links a.navlink:hover{ color:var(--cream); }
+  .nav-cta{ display:flex; gap:10px; align-items:center; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:10px 20px; border-radius:999px; font-weight:600; font-size:0.9rem;
+    cursor:pointer; border:1px solid transparent; transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    white-space:nowrap;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-ghost{ color:var(--cream); border-color:var(--line); background:transparent; }
+  .btn-ghost:hover{ border-color:var(--green); }
+  .btn-primary{ background:var(--green); color:var(--ink); box-shadow:0 6px 20px rgba(0,195,137,0.28); }
+  .btn-primary:hover{ box-shadow:0 8px 26px rgba(0,195,137,0.4); transform:translateY(-1px); }
+  .menu-toggle{ display:none; background:none; border:none; color:var(--cream); font-size:1.4rem; cursor:pointer; }
+ 
+  @media (max-width: 860px){
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0; background:var(--ink-2);
+      flex-direction:column; align-items:flex-start; padding:20px 24px; gap:16px;
+      border-bottom:1px solid var(--line);
+      display:none;
+    }
+    .nav-links.open{ display:flex; }
+    .menu-toggle{ display:block; }
+  }
+ 
+  /* ---------- HERO ---------- */
+  .hero{ position:relative; padding:72px 0 40px; overflow:hidden; }
+  .hero::before{
+    content:''; position:absolute; top:-140px; right:-160px; width:520px; height:520px;
+    background:radial-gradient(circle, rgba(0,195,137,0.28), transparent 70%);
+    filter:blur(10px); pointer-events:none;
+  }
+  .hero::after{
+    content:''; position:absolute; bottom:-200px; left:-160px; width:420px; height:420px;
+    background:radial-gradient(circle, rgba(245,185,66,0.14), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center; position:relative; z-index:1; }
+  @media (max-width: 940px){ .hero-grid{ grid-template-columns:1fr; gap:44px; } }
+ 
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 14px; border-radius:999px; border:1px solid var(--line);
+    font-size:0.8rem; color:var(--green); font-weight:600; background:rgba(0,195,137,0.06);
+    margin-bottom:22px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(0,195,137,0.2); }
+ 
+  .hero h1{ font-size:clamp(2.2rem, 4.6vw, 3.4rem); line-height:1.08; font-weight:700; }
+  .hero h1 .accent{ color:var(--green); }
+  .hero p.lead{
+    margin-top:20px; font-size:1.08rem; line-height:1.65; color:var(--muted); max-width:520px;
+  }
+  .hero-actions{ display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
+  .btn-lg{ padding:14px 26px; font-size:0.98rem; }
+ 
+  .hero-stats{ display:flex; gap:28px; margin-top:40px; flex-wrap:wrap; }
+  .hero-stat{ }
+  .hero-stat .num{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.3rem; color:var(--cream); }
+  .hero-stat .label{ font-size:0.78rem; color:var(--muted); margin-top:2px; }
+ 
+  /* Phone mock + ticker (signature element) */
+  .phone-stage{ position:relative; display:flex; justify-content:center; }
+  .phone{
+    width:290px; border-radius:34px; background:var(--surface);
+    border:1px solid var(--line); padding:14px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+    position:relative;
+  }
+  .phone-notch{ width:70px; height:6px; border-radius:4px; background:rgba(237,239,234,0.15); margin:0 auto 12px; }
+  .phone-screen{
+    background:linear-gradient(180deg, var(--ink-2), var(--ink));
+    border-radius:22px; padding:18px; height:430px; overflow:hidden; position:relative;
+  }
+  .balance-card{
+    background:linear-gradient(135deg, var(--green-deep), var(--green));
+    border-radius:16px; padding:16px 18px; color:var(--ink); margin-bottom:16px;
+  }
+  .balance-card .label{ font-size:0.72rem; font-weight:600; opacity:0.75; text-transform:uppercase; letter-spacing:0.05em; }
+  .balance-card .amt{ font-family:'JetBrains Mono',monospace; font-size:1.7rem; font-weight:700; margin-top:4px; }
+  .ticker-title{ font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; font-weight:600; }
+  .ticker-viewport{ height:280px; overflow:hidden; position:relative; }
+  .ticker-viewport::after{
+    content:''; position:absolute; bottom:0; left:0; right:0; height:50px;
+    background:linear-gradient(180deg, transparent, var(--ink));
+  }
+  .ticker-track{ display:flex; flex-direction:column; gap:10px; animation:tickerScroll 14s linear infinite; }
+  @keyframes tickerScroll{ 0%{ transform:translateY(0);} 100%{ transform:translateY(-50%);} }
+  .ticker-item{
+    display:flex; align-items:center; gap:10px; background:var(--surface-2);
+    border:1px solid var(--line); border-radius:12px; padding:10px 12px;
+  }
+  .ticker-item .avatar{
+    width:32px; height:32px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg, var(--gold), #d99a2b);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.75rem; color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .ticker-item .txt{ font-size:0.8rem; line-height:1.3; }
+  .ticker-item .txt b{ color:var(--green); font-family:'JetBrains Mono',monospace; }
+  .ticker-item .who{ color:var(--muted); }
+ 
+  /* ---------- SECTION HEADERS ---------- */
+  .section{ padding:88px 0; }
+  .section-head{ max-width:640px; margin-bottom:52px; }
+  .section-eyebrow{ font-size:0.8rem; font-weight:600; color:var(--gold); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; }
+  .section h2{ font-size:clamp(1.7rem, 3vw, 2.35rem); line-height:1.15; }
+  .section p.sub{ margin-top:14px; color:var(--muted); font-size:1.02rem; line-height:1.6; }
+ 
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+ 
+  /* ---------- PROGRAM CARDS ---------- */
+  .programs-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+  @media (max-width: 900px){ .programs-grid{ grid-template-columns:1fr; } }
+  .program-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden; transition:transform .25s ease, border-color .25s ease;
+    display:flex; flex-direction:column;
+  }
+  .program-card:hover{ transform:translateY(-6px); border-color:rgba(0,195,137,0.4); }
+  .program-media{ height:150px; position:relative; overflow:hidden; }
+  .program-media img{ width:100%; height:100%; object-fit:cover; }
+  .program-media .unlock-tag{
+    position:absolute; top:12px; right:12px; background:rgba(8,32,27,0.85);
+    border:1px solid var(--line); color:var(--gold); font-size:0.72rem; font-weight:600;
+    padding:5px 10px; border-radius:999px; font-family:'JetBrains Mono',monospace;
+  }
+  .program-body{ padding:22px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .program-body h3{ font-size:1.15rem; }
+  .program-body p{ color:var(--muted); font-size:0.92rem; line-height:1.55; margin:0; flex:1; }
+  .program-foot{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:14px; margin-top:6px; border-top:1px solid var(--line);
+  }
+  .program-foot .per{ font-size:0.75rem; color:var(--muted); }
+  .program-foot .pay{ font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--green); font-size:1.02rem; }
+ 
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{ display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; counter-reset:step; }
+  @media (max-width: 900px){ .steps{ grid-template-columns:1fr 1fr; } }
+  @media (max-width: 560px){ .steps{ grid-template-columns:1fr; } }
+  .step{
+    border:1px solid var(--line); border-radius:var(--radius); padding:24px 20px;
+    background:linear-gradient(180deg, var(--surface), transparent);
+    position:relative;
+  }
+  .step .num{
+    font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--gold);
+    border:1px solid var(--line); width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .step h3{ font-size:1.02rem; margin-bottom:8px; }
+  .step p{ font-size:0.88rem; color:var(--muted); line-height:1.55; margin:0; }
+ 
+  /* ---------- REFERRAL ---------- */
+  .referral{
+    display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;
+    background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:48px;
+  }
+  @media (max-width: 900px){ .referral{ grid-template-columns:1fr; padding:32px 24px; } }
+  .referral img{ border-radius:16px; }
+  .referral-list{ list-style:none; padding:0; margin:22px 0 0; display:flex; flex-direction:column; gap:14px; }
+  .referral-list li{ display:flex; align-items:flex-start; gap:12px; font-size:0.95rem; color:var(--cream); line-height:1.5; }
+  .referral-list .check{
+    flex:none; width:22px; height:22px; border-radius:50%; background:rgba(0,195,137,0.14);
+    color:var(--green); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; margin-top:2px;
+  }
+  .level-pills{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+  .level-pill{
+    font-size:0.78rem; font-family:'JetBrains Mono',monospace; padding:7px 13px; border-radius:999px;
+    border:1px solid var(--line); color:var(--muted);
+  }
+  .level-pill.active{ color:var(--green); border-color:var(--green); }
+ 
+  /* ---------- CTA ---------- */
+  .cta{
+    text-align:center; padding:90px 24px; position:relative;
+    background: radial-gradient(ellipse at top, rgba(0,195,137,0.12), transparent 60%);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .cta h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); max-width:560px; margin:0 auto; }
+  .cta p{ color:var(--muted); margin-top:16px; }
+  .cta .btn{ margin-top:28px; }
+ 
+  /* ---------- FOOTER ---------- */
+  footer{ padding:44px 24px 34px; }
+  .footer-inner{
+    max-width:var(--maxw); margin:0 auto; display:flex; justify-content:space-between;
+    align-items:center; flex-wrap:wrap; gap:16px; border-top:1px solid var(--line); padding-top:28px;
+  }
+  .footer-links{ display:flex; gap:22px; flex-wrap:wrap; }
+  .footer-links a{ font-size:0.85rem; color:var(--muted); }
+  .footer-links a:hover{ color:var(--cream); }
+  .copyright{ font-size:0.8rem; color:var(--muted); }
+ 
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--green); outline-offset:3px; }
+</style>
+</head>
+<body>
+ 
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">
+      <span class="logo-mark">P</span>
+      PesaLoop
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a class="navlink" href="#programs">Programs</a>
+      <a class="navlink" href="#how">How it works</a>
+      <a class="navlink" href="#referral">Referrals</a>
+      <a class="navlink" href="#" onclick="return false;">Login</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost" onclick="return false;">Login</a>
+      <a href="#programs" class="btn btn-primary">Get started</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </div>
+</header>
+ 
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Paid out via M-Pesa</span>
+        <h1>Turn a spare hour into <span class="accent">daily pay.</span></h1>
+        <p class="lead">Unlock an earning program on PesaLoop, finish quick daily tasks, and withdraw straight to your M-Pesa line. No office, no shift — just your phone.</p>
+        <div class="hero-actions">
+          <a href="#programs" class="btn btn-primary btn-lg">Start earning free</a>
+          <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num mono">KSh 2.4M+</div><div class="label">Paid out to date</div></div>
+          <div class="hero-stat"><div class="num mono">18,000+</div><div class="label">Active earners</div></div>
+          <div class="hero-stat"><div class="num mono">24 hrs</div><div class="label">Wallet reset cycle</div></div>
+        </div>
+      </div>
+ 
+      <div class="phone-stage">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="balance-card">
+              <div class="label">Total wallet</div>
+              <div class="amt mono">KSh 4,850</div>
+            </div>
+            <div class="ticker-title">Live payouts</div>
+            <div class="ticker-viewport">
+              <div class="ticker-track" id="tickerTrack"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- PROGRAMS -->
+  <section class="section" id="programs">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Earning programs</div>
+        <h2>Unlock once. Earn every day.</h2>
+        <p class="sub">A single unlock fee opens a program for good. Every task you finish after that pays into its own wallet — no repeat charges.</p>
+      </div>
+ 
+      <div class="programs-grid">
+        <article class="program-card reveal">
+          <div class="program-media">
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=60" alt="Hotel with a pool">
+            <span class="unlock-tag">Unlock KSh 200</span>
+          </div>
+          <div class="program-body">
+            <h3>Hotel Reviews</h3>
+            <p>Rate real hotels and write short reviews. Your task list resets daily, so the earning never runs dry.</p>
+            <div class="program-foot">
+              <span class="per">Per review</span>
+              <span class="pay mono">+ KSh 500</span>
+            </div>
+          </div>
+        </article>
+ 
+        <article class="program-card reveal">
+          <div class="program-media">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=60" alt="Analytics dashboard">
+            <span class="unlock-tag">Unlock KSh 150</span>
+          </div>
+          <div class="program-body">
+            <h3>Y99 Sessions</h3>
+            <p>Run a short guided session and complete it. Payout lands in your Y99 wallet the moment you're done.</p>
+            <div class="program-foot">
+              <span class="per">Per session</span>
+              <span class="pay mono">+ KSh 300</span>
+            </div>
+          </div>
+        </article>
+ 
+        <article class="program-card reveal">
+          <div class="program-media">
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=60" alt="AI visual">
+            <span class="unlock-tag">Unlock KSh 100</span>
+          </div>
+          <div class="program-body">
+            <h3>AI Training</h3>
+            <p>Help label and guide AI training sessions. Straightforward, guided, and paid per completion.</p>
+            <div class="program-foot">
+              <span class="per">Per session</span>
+              <span class="pay mono">+ KSh 200</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">How it works</div>
+        <h2>Four steps to your first payout.</h2>
+        <p class="sub">Every earner follows the same short path, in this order.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="num">01</div>
+          <h3>Create an account</h3>
+          <p>Sign up free with your phone number in under a minute.</p>
+        </div>
+        <div class="step reveal">
+          <div class="num">02</div>
+          <h3>Unlock a program</h3>
+          <p>Pay once with M-Pesa. Access opens the moment payment confirms.</p>
+        </div>
+        <div class="step reveal">
+          <div class="num">03</div>
+          <h3>Do daily tasks</h3>
+          <p>Reviews and sessions pay into your wallets. Limits reset every day.</p>
+        </div>
+        <div class="step reveal">
+          <div class="num">04</div>
+          <h3>Withdraw</h3>
+          <p>Cash out to M-Pesa whenever you're ready. Money lands on your phone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- REFERRAL -->
+  <section class="section" id="referral">
+    <div class="wrap">
+      <div class="referral reveal">
+        <div>
+          <div class="section-eyebrow">Referrals & team</div>
+          <h2>Your circle pays you back.</h2>
+          <ul class="referral-list">
+            <li><span class="check">✓</span> Share your link. When someone you invited unlocks a program, a commission drops into your commission wallet.</li>
+            <li><span class="check">✓</span> Commission wallets stay separate from task wallets — earnings never mix.</li>
+            <li><span class="check">✓</span> Track a multi-level team and see who's active at each level.</li>
+          </ul>
+          <div class="level-pills">
+            <span class="level-pill active">Level 1 · Direct</span>
+            <span class="level-pill">Level 2</span>
+            <span class="level-pill">Level 3</span>
+          </div>
+        </div>
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=60" alt="Friends celebrating together">
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Your phone is the office.</h2>
+    <p>Join PesaLoop free and unlock your first program today.</p>
+    <a href="#programs" class="btn btn-primary btn-lg">Create free account</a>
+  </section>
+</main>
+ 
+<footer>
+  <div class="footer-inner">
+    <div class="logo"><span class="logo-mark">P</span> PesaLoop</div>
+    <div class="footer-links">
+      <a href="#" onclick="return false;">Login</a>
+      <a href="#" onclick="return false;">Register</a>
+      <a href="#programs">Programs</a>
+    </div>
+    <div class="copyright">© <span id="year"></span> PesaLoop. All rights reserved.</div>
+  </div>
+</footer>
+ 
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+ 
+  // Mobile menu
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+ 
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+ 
+  // Live payout ticker (illustrative demo data, not real transactions)
+  const names = ["Faith", "James", "Achieng", "Kevo", "Wanjiru", "Brian", "Cynthia", "Otieno", "Mercy", "Dennis"];
+  const events = [
+    { text: "earned", amt: "KSh 500", tag: "Hotel review paid" },
+    { text: "earned", amt: "KSh 300", tag: "Y99 session done" },
+    { text: "earned", amt: "KSh 200", tag: "AI training session" },
+    { text: "unlocked", amt: "a program", tag: "Commission credited" },
+    { text: "withdrew", amt: "KSh 1,200", tag: "Sent to M-Pesa" },
+  ];
+  function initials(name){ return name.slice(0,2).toUpperCase(); }
+  function buildItem(){
+    const name = names[Math.floor(Math.random()*names.length)];
+    const ev = events[Math.floor(Math.random()*events.length)];
+    const div = document.createElement('div');
+    div.className = 'ticker-item';
+    div.innerHTML = `
+      <div class="avatar">${initials(name)}</div>
+      <div class="txt"><span class="who">${name} ${ev.text}</span><br><b>${ev.amt}</b> · ${ev.tag}</div>
+    `;
+    return div;
+  }
+  const track = document.getElementById('tickerTrack');
+  const batch = [];
+  for (let i = 0; i < 8; i++) batch.push(buildItem());
+  batch.forEach(el => track.appendChild(el));
+  // duplicate for seamless loop
+  batch.forEach(el => track.appendChild(el.cloneNode(true)));
+</script>
+ 
+</body>
+</html>
