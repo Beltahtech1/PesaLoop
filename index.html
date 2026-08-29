@@ -42,11 +42,11 @@
   img{max-width:100%; display:block;}
   .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
   ::selection{ background:var(--green); color:var(--ink); }
- 
+
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
   }
- 
+
   /* ---------- NAV ---------- */
   header.nav{
     position:sticky; top:0; z-index:100;
@@ -82,7 +82,7 @@
   .btn-primary{ background:var(--green); color:var(--ink); box-shadow:0 6px 20px rgba(0,195,137,0.28); }
   .btn-primary:hover{ box-shadow:0 8px 26px rgba(0,195,137,0.4); transform:translateY(-1px); }
   .menu-toggle{ display:none; background:none; border:none; color:var(--cream); font-size:1.4rem; cursor:pointer; }
- 
+
   @media (max-width: 860px){
     .nav-links{
       position:absolute; top:100%; left:0; right:0; background:var(--ink-2);
@@ -93,7 +93,7 @@
     .nav-links.open{ display:flex; }
     .menu-toggle{ display:block; }
   }
- 
+
   /* ---------- HERO ---------- */
   .hero{ position:relative; padding:72px 0 40px; overflow:hidden; }
   .hero::before{
@@ -108,7 +108,7 @@
   }
   .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center; position:relative; z-index:1; }
   @media (max-width: 940px){ .hero-grid{ grid-template-columns:1fr; gap:44px; } }
- 
+
   .eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     padding:7px 14px; border-radius:999px; border:1px solid var(--line);
@@ -116,7 +116,7 @@
     margin-bottom:22px;
   }
   .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(0,195,137,0.2); }
- 
+
   .hero h1{ font-size:clamp(2.2rem, 4.6vw, 3.4rem); line-height:1.08; font-weight:700; }
   .hero h1 .accent{ color:var(--green); }
   .hero p.lead{
@@ -124,12 +124,12 @@
   }
   .hero-actions{ display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
   .btn-lg{ padding:14px 26px; font-size:0.98rem; }
- 
+
   .hero-stats{ display:flex; gap:28px; margin-top:40px; flex-wrap:wrap; }
   .hero-stat{ }
   .hero-stat .num{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.3rem; color:var(--cream); }
   .hero-stat .label{ font-size:0.78rem; color:var(--muted); margin-top:2px; }
- 
+
   /* Phone mock + ticker (signature element) */
   .phone-stage{ position:relative; display:flex; justify-content:center; }
   .phone{
@@ -170,17 +170,17 @@
   .ticker-item .txt{ font-size:0.8rem; line-height:1.3; }
   .ticker-item .txt b{ color:var(--green); font-family:'JetBrains Mono',monospace; }
   .ticker-item .who{ color:var(--muted); }
- 
+
   /* ---------- SECTION HEADERS ---------- */
   .section{ padding:88px 0; }
   .section-head{ max-width:640px; margin-bottom:52px; }
   .section-eyebrow{ font-size:0.8rem; font-weight:600; color:var(--gold); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; }
   .section h2{ font-size:clamp(1.7rem, 3vw, 2.35rem); line-height:1.15; }
   .section p.sub{ margin-top:14px; color:var(--muted); font-size:1.02rem; line-height:1.6; }
- 
+
   .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
   .reveal.in{ opacity:1; transform:translateY(0); }
- 
+
   /* ---------- PROGRAM CARDS ---------- */
   .programs-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
   @media (max-width: 900px){ .programs-grid{ grid-template-columns:1fr; } }
@@ -206,7 +206,7 @@
   }
   .program-foot .per{ font-size:0.75rem; color:var(--muted); }
   .program-foot .pay{ font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--green); font-size:1.02rem; }
- 
+
   /* ---------- HOW IT WORKS ---------- */
   .steps{ display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; counter-reset:step; }
   @media (max-width: 900px){ .steps{ grid-template-columns:1fr 1fr; } }
@@ -223,7 +223,7 @@
   }
   .step h3{ font-size:1.02rem; margin-bottom:8px; }
   .step p{ font-size:0.88rem; color:var(--muted); line-height:1.55; margin:0; }
- 
+
   /* ---------- REFERRAL ---------- */
   .referral{
     display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;
@@ -243,7 +243,7 @@
     border:1px solid var(--line); color:var(--muted);
   }
   .level-pill.active{ color:var(--green); border-color:var(--green); }
- 
+
   /* ---------- CTA ---------- */
   .cta{
     text-align:center; padding:90px 24px; position:relative;
@@ -253,7 +253,7 @@
   .cta h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); max-width:560px; margin:0 auto; }
   .cta p{ color:var(--muted); margin-top:16px; }
   .cta .btn{ margin-top:28px; }
- 
+
   /* ---------- FOOTER ---------- */
   footer{ padding:44px 24px 34px; }
   .footer-inner{
@@ -264,13 +264,99 @@
   .footer-links a{ font-size:0.85rem; color:var(--muted); }
   .footer-links a:hover{ color:var(--cream); }
   .copyright{ font-size:0.8rem; color:var(--muted); }
- 
+
   /* focus visibility */
   a:focus-visible, button:focus-visible{ outline:2px solid var(--green); outline-offset:3px; }
+
+  /* ---------- UNLOCK MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(4,16,13,0.7);
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    width:100%; max-width:440px; background:var(--surface); border:1px solid var(--line);
+    border-radius:22px; padding:28px; position:relative; max-height:90vh; overflow-y:auto;
+    animation: modalIn .25s ease;
+  }
+  @keyframes modalIn{ from{ opacity:0; transform:translateY(12px) scale(0.98);} to{ opacity:1; transform:translateY(0) scale(1);} }
+  .modal-close{
+    position:absolute; top:16px; right:16px; background:var(--surface-2); border:1px solid var(--line);
+    color:var(--muted); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:hover{ color:var(--cream); }
+  .modal-eyebrow{ font-size:0.78rem; color:var(--gold); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+  .modal h3.modal-title{ font-size:1.35rem; margin-top:6px; }
+  .modal p.modal-desc{ color:var(--muted); font-size:0.9rem; margin-top:8px; line-height:1.55; }
+
+  .brand-badges{ display:flex; gap:10px; margin:18px 0 6px; }
+  .brand-badge{
+    display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:10px;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:0.8rem; border:1px solid var(--line);
+  }
+  .brand-badge .chip{ width:16px; height:16px; border-radius:4px; flex:none; }
+  .badge-safaricom{ background:rgba(0,168,89,0.1); color:#20B759; }
+  .badge-safaricom .chip{ background:#20B759; }
+  .badge-mpesa{ background:rgba(50,168,82,0.1); color:#3AC155; }
+  .badge-mpesa .chip{ background:linear-gradient(135deg,#3AC155,#1D8A3B); }
+
+  .till-box{
+    margin-top:16px; background:var(--ink-2); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .till-box .label{ font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
+  .till-box .num{ font-family:'JetBrains Mono',monospace; font-size:1.5rem; font-weight:700; color:var(--cream); letter-spacing:0.03em; }
+  .copy-btn{
+    flex:none; background:var(--green); color:var(--ink); border:none; padding:9px 15px;
+    border-radius:10px; font-weight:600; font-size:0.82rem; cursor:pointer; transition:background .18s ease;
+  }
+  .copy-btn:hover{ background:#04d896; }
+  .copy-btn.copied{ background:var(--gold); }
+
+  .steps-mini{ margin:18px 0 4px; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .steps-mini li{ display:flex; gap:10px; font-size:0.85rem; color:var(--cream); line-height:1.5; }
+  .steps-mini .n{
+    flex:none; width:20px; height:20px; border-radius:50%; background:var(--surface-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-family:'JetBrains Mono',monospace; color:var(--gold);
+  }
+
+  .form-group{ margin-top:18px; }
+  .form-group label{ display:block; font-size:0.82rem; color:var(--muted); margin-bottom:8px; font-weight:500; }
+  .form-group input{
+    width:100%; background:var(--ink-2); border:1px solid var(--line); border-radius:12px;
+    padding:13px 14px; color:var(--cream); font-family:'JetBrains Mono',monospace; font-size:0.95rem;
+    letter-spacing:0.04em; transition:border-color .18s ease;
+  }
+  .form-group input::placeholder{ color:rgba(143,166,156,0.55); font-family:'Inter',sans-serif; letter-spacing:normal; }
+  .form-group input:focus{ outline:none; border-color:var(--green); }
+
+  .modal-submit{ width:100%; margin-top:18px; padding:13px; font-size:0.95rem; border-radius:12px; }
+
+  .pending-state{ display:none; margin-top:18px; }
+  .pending-state.show{ display:block; }
+  .pending-card{
+    background:rgba(245,185,66,0.08); border:1px solid rgba(245,185,66,0.35); border-radius:14px;
+    padding:16px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .pending-icon{
+    flex:none; width:32px; height:32px; border-radius:50%; background:rgba(245,185,66,0.18);
+    display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:0.95rem;
+    animation:spin 1.6s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .pending-card h4{ font-size:0.92rem; margin:0 0 4px; font-family:'Space Grotesk',sans-serif; }
+  .pending-card p{ font-size:0.82rem; color:var(--muted); margin:0; line-height:1.5; }
+  .pending-code{ font-family:'JetBrains Mono',monospace; color:var(--cream); }
+
+  @media (prefers-reduced-motion: reduce){
+    .pending-icon{ animation:none; }
+  }
 </style>
 </head>
 <body>
- 
+
 <header class="nav">
   <div class="nav-inner">
     <a href="#top" class="logo">
@@ -290,7 +376,7 @@
     </div>
   </div>
 </header>
- 
+
 <main id="top">
   <!-- HERO -->
   <section class="hero">
@@ -300,7 +386,7 @@
         <h1>Turn a spare hour into <span class="accent">daily pay.</span></h1>
         <p class="lead">Unlock an earning program on PesaLoop, finish quick daily tasks, and withdraw straight to your M-Pesa line. No office, no shift — just your phone.</p>
         <div class="hero-actions">
-          <a href="#programs" class="btn btn-primary btn-lg">Start earning free</a>
+          <a href="#" class="btn btn-primary btn-lg" onclick="openUnlock('Hotel Reviews','KSh 200'); return false;">Start earning free</a>
           <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
         </div>
         <div class="hero-stats">
@@ -309,7 +395,7 @@
           <div class="hero-stat"><div class="num mono">24 hrs</div><div class="label">Wallet reset cycle</div></div>
         </div>
       </div>
- 
+
       <div class="phone-stage">
         <div class="phone">
           <div class="phone-notch"></div>
@@ -327,7 +413,7 @@
       </div>
     </div>
   </section>
- 
+
   <!-- PROGRAMS -->
   <section class="section" id="programs">
     <div class="wrap">
@@ -336,7 +422,7 @@
         <h2>Unlock once. Earn every day.</h2>
         <p class="sub">A single unlock fee opens a program for good. Every task you finish after that pays into its own wallet — no repeat charges.</p>
       </div>
- 
+
       <div class="programs-grid">
         <article class="program-card reveal">
           <div class="program-media">
@@ -350,9 +436,10 @@
               <span class="per">Per review</span>
               <span class="pay mono">+ KSh 500</span>
             </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:6px;" onclick="openUnlock('Hotel Reviews','KSh 200')">Unlock program</button>
           </div>
         </article>
- 
+
         <article class="program-card reveal">
           <div class="program-media">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=60" alt="Analytics dashboard">
@@ -365,9 +452,10 @@
               <span class="per">Per session</span>
               <span class="pay mono">+ KSh 300</span>
             </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:6px;" onclick="openUnlock('Y99 Sessions','KSh 150')">Unlock program</button>
           </div>
         </article>
- 
+
         <article class="program-card reveal">
           <div class="program-media">
             <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=60" alt="AI visual">
@@ -380,12 +468,13 @@
               <span class="per">Per session</span>
               <span class="pay mono">+ KSh 200</span>
             </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:6px;" onclick="openUnlock('AI Training','KSh 100')">Unlock program</button>
           </div>
         </article>
       </div>
     </div>
   </section>
- 
+
   <!-- HOW IT WORKS -->
   <section class="section" id="how">
     <div class="wrap">
@@ -418,7 +507,7 @@
       </div>
     </div>
   </section>
- 
+
   <!-- REFERRAL -->
   <section class="section" id="referral">
     <div class="wrap">
@@ -441,15 +530,15 @@
       </div>
     </div>
   </section>
- 
+
   <!-- CTA -->
   <section class="cta">
     <h2>Your phone is the office.</h2>
     <p>Join PesaLoop free and unlock your first program today.</p>
-    <a href="#programs" class="btn btn-primary btn-lg">Create free account</a>
+    <a href="#" class="btn btn-primary btn-lg" onclick="openUnlock('Hotel Reviews','KSh 200'); return false;">Create free account</a>
   </section>
 </main>
- 
+
 <footer>
   <div class="footer-inner">
     <div class="logo"><span class="logo-mark">P</span> PesaLoop</div>
@@ -461,17 +550,63 @@
     <div class="copyright">© <span id="year"></span> PesaLoop. All rights reserved.</div>
   </div>
 </footer>
- 
+
+<div class="modal-overlay" id="unlockOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="unlockTitle">
+    <button class="modal-close" id="unlockClose" aria-label="Close">✕</button>
+    <div class="modal-eyebrow">Unlock program</div>
+    <h3 class="modal-title" id="unlockTitle">Hotel Reviews</h3>
+    <p class="modal-desc">Send the unlock fee to the till number below, then paste your M-Pesa confirmation code. We verify every payment against Safaricom's records before a program unlocks — this usually takes a few minutes.</p>
+
+    <div class="brand-badges">
+      <span class="brand-badge badge-safaricom"><span class="chip"></span>Safaricom</span>
+      <span class="brand-badge badge-mpesa"><span class="chip"></span>M-PESA</span>
+    </div>
+
+    <div class="till-box">
+      <div>
+        <div class="label">Buy Goods Till Number</div>
+        <div class="num mono" id="tillNumber">7968544</div>
+      </div>
+      <button class="copy-btn" id="copyTillBtn" onclick="copyTill()">Copy</button>
+    </div>
+
+    <ul class="steps-mini">
+      <li><span class="n">1</span> Go to M-Pesa → Lipa na M-Pesa → Buy Goods and Services.</li>
+      <li><span class="n">2</span> Enter till number <b>7968544</b> and the unlock amount (<span id="unlockAmount">KSh 200</span>).</li>
+      <li><span class="n">3</span> Copy the confirmation code from the M-Pesa SMS and paste it below.</li>
+    </ul>
+
+    <form id="unlockForm" onsubmit="return submitUnlock(event)">
+      <div class="form-group">
+        <label for="mpesaCode">M-Pesa confirmation code</label>
+        <input type="text" id="mpesaCode" placeholder="e.g. QK7X9P2LMN" required autocomplete="off" maxlength="12">
+      </div>
+      <button type="submit" class="btn btn-primary modal-submit">Submit for verification</button>
+    </form>
+
+    <div class="pending-state" id="pendingState">
+      <div class="pending-card">
+        <div class="pending-icon">⏳</div>
+        <div>
+          <h4>Pending verification</h4>
+          <p>Code <span class="pending-code" id="pendingCodeText"></span> has been submitted. We're confirming this payment with Safaricom — your program unlocks automatically once it's verified. This isn't instant, so no need to resubmit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Year
   document.getElementById('year').textContent = new Date().getFullYear();
- 
+
   // Mobile menu
   const toggle = document.getElementById('menuToggle');
   const links = document.getElementById('navLinks');
   toggle.addEventListener('click', () => links.classList.toggle('open'));
   links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
- 
+
   // Scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries) => {
@@ -483,7 +618,7 @@
     });
   }, { threshold: 0.15 });
   revealEls.forEach(el => io.observe(el));
- 
+
   // Live payout ticker (illustrative demo data, not real transactions)
   const names = ["Faith", "James", "Achieng", "Kevo", "Wanjiru", "Brian", "Cynthia", "Otieno", "Mercy", "Dennis"];
   const events = [
@@ -511,7 +646,69 @@
   batch.forEach(el => track.appendChild(el));
   // duplicate for seamless loop
   batch.forEach(el => track.appendChild(el.cloneNode(true)));
+
+  // ---- Unlock modal ----
+  const overlay = document.getElementById('unlockOverlay');
+  const unlockTitle = document.getElementById('unlockTitle');
+  const unlockAmount = document.getElementById('unlockAmount');
+  const unlockForm = document.getElementById('unlockForm');
+  const pendingState = document.getElementById('pendingState');
+  const pendingCodeText = document.getElementById('pendingCodeText');
+  const mpesaCodeInput = document.getElementById('mpesaCode');
+
+  function openUnlock(programName, amount){
+    unlockTitle.textContent = programName;
+    unlockAmount.textContent = amount;
+    // reset state each time it's opened
+    unlockForm.style.display = 'block';
+    pendingState.classList.remove('show');
+    mpesaCodeInput.value = '';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeUnlock(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('unlockClose').addEventListener('click', closeUnlock);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeUnlock(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUnlock(); });
+
+  function copyTill(){
+    const till = document.getElementById('tillNumber').textContent.trim();
+    const btn = document.getElementById('copyTillBtn');
+    navigator.clipboard.writeText(till).then(() => {
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    }).catch(() => {
+      // fallback for older browsers
+      const tmp = document.createElement('input');
+      tmp.value = till;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+    });
+  }
+
+  // IMPORTANT: this form does NOT verify the code — there is no backend here.
+  // It only records that a code was submitted and shows an honest "pending
+  // verification" state. Real verification requires Safaricom's Daraja C2B
+  // confirmation API running on a server, checked against actual till
+  // transactions, before any program is unlocked.
+  function submitUnlock(e){
+    e.preventDefault();
+    const code = mpesaCodeInput.value.trim();
+    if (!code) return false;
+    pendingCodeText.textContent = code.toUpperCase();
+    unlockForm.style.display = 'none';
+    pendingState.classList.add('show');
+    return false;
+  }
 </script>
- 
+
 </body>
 </html>
