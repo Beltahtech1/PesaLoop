@@ -353,6 +353,33 @@
   @media (prefers-reduced-motion: reduce){
     .pending-icon{ animation:none; }
   }
+
+  /* ---------- DASHBOARD ---------- */
+  .dash-card{
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px 30px;
+  }
+  .dash-avatar{
+    width:52px; height:52px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg, var(--green), var(--green-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.2rem; color:var(--ink);
+  }
+  #dashUser{ display:none; }
+  .auth-tabs{ display:flex; gap:8px; background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:4px; margin-top:18px; }
+  .auth-tab{
+    flex:1; text-align:center; padding:9px 0; border-radius:9px; font-size:0.85rem; font-weight:600;
+    color:var(--muted); cursor:pointer; transition:background .18s ease, color .18s ease; background:none; border:none;
+    font-family:'Inter',sans-serif;
+  }
+  .auth-tab.active{ background:var(--green); color:var(--ink); }
+  .auth-error{
+    display:none; margin-top:14px; background:rgba(233,90,90,0.1); border:1px solid rgba(233,90,90,0.35);
+    color:#f19a9a; font-size:0.82rem; padding:10px 12px; border-radius:10px;
+  }
+  .auth-error.show{ display:block; }
+  .auth-success{ display:none; margin-top:18px; text-align:center; }
+  .auth-success.show{ display:block; }
 </style>
 </head>
 <body>
@@ -367,17 +394,40 @@
       <a class="navlink" href="#programs">Programs</a>
       <a class="navlink" href="#how">How it works</a>
       <a class="navlink" href="#referral">Referrals</a>
-      <a class="navlink" href="#" onclick="return false;">Login</a>
+      <a class="navlink" href="#dashboard">Dashboard</a>
     </nav>
-    <div class="nav-cta">
-      <a href="#" class="btn btn-ghost" onclick="return false;">Login</a>
-      <a href="#programs" class="btn btn-primary">Get started</a>
+    <div class="nav-cta" id="navCta">
+      <a href="#" class="btn btn-ghost" id="navLoginBtn" onclick="openAuth('login'); return false;">Login</a>
+      <a href="#" class="btn btn-primary" id="navSignupBtn" onclick="openAuth('signup'); return false;">Get started</a>
       <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
     </div>
   </div>
 </header>
 
 <main id="top">
+  <!-- DASHBOARD -->
+  <section class="section" id="dashboard" style="padding-top:48px; padding-bottom:0;">
+    <div class="wrap">
+      <div class="dash-card" id="dashGuest">
+        <div>
+          <div class="section-eyebrow">Your dashboard</div>
+          <h2 style="font-size:1.5rem; margin-top:6px;">Create a free account to see it here.</h2>
+          <p class="sub" style="margin-top:8px;">Your name, wallets, and unlocked programs will show up on this dashboard once you sign up.</p>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="openAuth('signup')">Create free account</button>
+      </div>
+      <div class="dash-card dash-card--in" id="dashUser" style="display:none;">
+        <div class="dash-avatar" id="dashAvatar">P</div>
+        <div style="flex:1;">
+          <div class="section-eyebrow">Welcome back</div>
+          <h2 style="font-size:1.5rem; margin-top:4px;" id="dashName">There</h2>
+          <p class="sub" style="margin-top:6px;" id="dashEmail">—</p>
+        </div>
+        <button class="btn btn-ghost" onclick="logoutUser()">Log out</button>
+      </div>
+    </div>
+  </section>
+
   <!-- HERO -->
   <section class="hero">
     <div class="wrap hero-grid">
@@ -401,7 +451,7 @@
           <div class="phone-notch"></div>
           <div class="phone-screen">
             <div class="balance-card">
-              <div class="label">Total wallet</div>
+              <div class="label" id="phoneLabel">Total wallet</div>
               <div class="amt mono">KSh 4,850</div>
             </div>
             <div class="ticker-title">Live payouts</div>
@@ -543,8 +593,8 @@
   <div class="footer-inner">
     <div class="logo"><span class="logo-mark">P</span> PesaLoop</div>
     <div class="footer-links">
-      <a href="#" onclick="return false;">Login</a>
-      <a href="#" onclick="return false;">Register</a>
+      <a href="#" onclick="openAuth('login'); return false;">Login</a>
+      <a href="#" onclick="openAuth('signup'); return false;">Register</a>
       <a href="#programs">Programs</a>
     </div>
     <div class="copyright">© <span id="year"></span> PesaLoop. All rights reserved.</div>
@@ -591,6 +641,47 @@
         <div>
           <h4>Pending verification</h4>
           <p>Code <span class="pending-code" id="pendingCodeText"></span> has been submitted. We're confirming this payment with Safaricom — your program unlocks automatically once it's verified. This isn't instant, so no need to resubmit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="authOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="modal-close" id="authClose" aria-label="Close">✕</button>
+    <div class="modal-eyebrow">PesaLoop account</div>
+    <h3 class="modal-title" id="authTitle">Create your account</h3>
+    <p class="modal-desc" id="authDesc">Sign up free to unlock programs and track your earnings.</p>
+
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" id="tabSignup" onclick="switchAuthTab('signup')">Sign up</button>
+      <button type="button" class="auth-tab" id="tabLogin" onclick="switchAuthTab('login')">Log in</button>
+    </div>
+
+    <form id="authForm" onsubmit="return handleAuthSubmit(event)">
+      <div class="form-group" id="nameField">
+        <label for="authName">Full name</label>
+        <input type="text" id="authName" placeholder="e.g. Faith Wanjiru" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label for="authEmail">Email address</label>
+        <input type="email" id="authEmail" placeholder="you@example.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="authPassword">Password</label>
+        <input type="password" id="authPassword" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6">
+      </div>
+      <div class="auth-error" id="authError"></div>
+      <button type="submit" class="btn btn-primary modal-submit" id="authSubmitBtn">Create account</button>
+    </form>
+
+    <div class="auth-success" id="authSuccess">
+      <div class="pending-card" style="background:rgba(0,195,137,0.08); border-color:rgba(0,195,137,0.35);">
+        <div class="pending-icon" style="animation:none; color:var(--green); background:rgba(0,195,137,0.18);">✓</div>
+        <div style="text-align:left;">
+          <h4 id="authSuccessTitle">You're in!</h4>
+          <p id="authSuccessMsg">Redirecting you to your dashboard…</p>
         </div>
       </div>
     </div>
@@ -708,6 +799,163 @@
     pendingState.classList.add('show');
     return false;
   }
+
+  // ---- Accounts (client-side only — stored in this browser's localStorage) ----
+  // NOTE: This is a demo-grade auth flow with no server, so passwords are
+  // stored in plain text in the visitor's own browser. It's fine for a
+  // prototype, but a real product needs a proper backend with hashed
+  // passwords and a real database before handling genuine user accounts.
+  const USERS_KEY = 'pesaloop_users';
+  const SESSION_KEY = 'pesaloop_session';
+
+  function getUsers(){
+    try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveUsers(users){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+  function getSession(){ return localStorage.getItem(SESSION_KEY); }
+  function setSession(email){ localStorage.setItem(SESSION_KEY, email); }
+  function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+  function nameInitials(fullName){
+    return fullName.trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
+  }
+
+  function renderAuthState(){
+    const email = getSession();
+    const users = getUsers();
+    const user = users.find(u => u.email === email);
+    const dashGuest = document.getElementById('dashGuest');
+    const dashUser = document.getElementById('dashUser');
+    const navLoginBtn = document.getElementById('navLoginBtn');
+    const navSignupBtn = document.getElementById('navSignupBtn');
+    const phoneLabel = document.getElementById('phoneLabel');
+
+    if (user) {
+      dashGuest.style.display = 'none';
+      dashUser.style.display = 'flex';
+      document.getElementById('dashAvatar').textContent = nameInitials(user.name) || 'P';
+      document.getElementById('dashName').textContent = user.name;
+      document.getElementById('dashEmail').textContent = user.email;
+      navLoginBtn.style.display = 'none';
+      navSignupBtn.textContent = user.name.split(' ')[0];
+      navSignupBtn.onclick = (e) => { e.preventDefault(); window.location.hash = '#dashboard'; };
+      if (phoneLabel) phoneLabel.textContent = user.name.split(' ')[0] + "'s wallet";
+    } else {
+      dashGuest.style.display = 'flex';
+      dashUser.style.display = 'none';
+      navLoginBtn.style.display = 'inline-flex';
+      navSignupBtn.textContent = 'Get started';
+      navSignupBtn.onclick = (e) => { e.preventDefault(); openAuth('signup'); };
+      if (phoneLabel) phoneLabel.textContent = 'Total wallet';
+    }
+  }
+
+  function logoutUser(){
+    clearSession();
+    renderAuthState();
+  }
+
+  // ---- Auth modal ----
+  const authOverlay = document.getElementById('authOverlay');
+  const authForm = document.getElementById('authForm');
+  const authError = document.getElementById('authError');
+  const authSuccess = document.getElementById('authSuccess');
+  const nameField = document.getElementById('nameField');
+  const authName = document.getElementById('authName');
+  const authEmail = document.getElementById('authEmail');
+  const authPassword = document.getElementById('authPassword');
+  const authSubmitBtn = document.getElementById('authSubmitBtn');
+  let authMode = 'signup';
+
+  function openAuth(mode){
+    switchAuthTab(mode || 'signup');
+    authOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAuth(){
+    authOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('authClose').addEventListener('click', closeAuth);
+  authOverlay.addEventListener('click', (e) => { if (e.target === authOverlay) closeAuth(); });
+
+  function switchAuthTab(mode){
+    authMode = mode;
+    authForm.style.display = 'block';
+    authSuccess.classList.remove('show');
+    authError.classList.remove('show');
+    authForm.reset();
+    document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
+    document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+    if (mode === 'signup') {
+      document.getElementById('authTitle').textContent = 'Create your account';
+      document.getElementById('authDesc').textContent = 'Sign up free to unlock programs and track your earnings.';
+      nameField.style.display = 'block';
+      authName.setAttribute('required', 'required');
+      authSubmitBtn.textContent = 'Create account';
+    } else {
+      document.getElementById('authTitle').textContent = 'Welcome back';
+      document.getElementById('authDesc').textContent = 'Log in with the email you signed up with.';
+      nameField.style.display = 'none';
+      authName.removeAttribute('required');
+      authSubmitBtn.textContent = 'Log in';
+    }
+  }
+
+  function showAuthError(msg){
+    authError.textContent = msg;
+    authError.classList.add('show');
+  }
+
+  function handleAuthSubmit(e){
+    e.preventDefault();
+    authError.classList.remove('show');
+    const email = authEmail.value.trim().toLowerCase();
+    const password = authPassword.value;
+    const users = getUsers();
+
+    if (authMode === 'signup') {
+      const name = authName.value.trim();
+      if (!name) { showAuthError('Please enter your name.'); return false; }
+      if (users.some(u => u.email === email)) {
+        showAuthError('An account with this email already exists — try logging in instead.');
+        return false;
+      }
+      users.push({ name, email, password });
+      saveUsers(users);
+      setSession(email);
+      authForm.style.display = 'none';
+      document.getElementById('authSuccessTitle').textContent = `Welcome, ${name.split(' ')[0]}!`;
+      document.getElementById('authSuccessMsg').textContent = 'Your account is ready — heading to your dashboard…';
+      authSuccess.classList.add('show');
+      renderAuthState();
+      setTimeout(() => {
+        closeAuth();
+        document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+      }, 1100);
+    } else {
+      const user = users.find(u => u.email === email);
+      if (!user || user.password !== password) {
+        showAuthError('That email and password combination doesn\'t match an account.');
+        return false;
+      }
+      setSession(email);
+      authForm.style.display = 'none';
+      document.getElementById('authSuccessTitle').textContent = `Welcome back, ${user.name.split(' ')[0]}!`;
+      document.getElementById('authSuccessMsg').textContent = 'Heading to your dashboard…';
+      authSuccess.classList.add('show');
+      renderAuthState();
+      setTimeout(() => {
+        closeAuth();
+        document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+      }, 1100);
+    }
+    return false;
+  }
+
+  // Render whatever session already exists on page load
+  renderAuthState();
 </script>
 
 </body>
