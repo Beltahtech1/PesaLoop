@@ -7,6 +7,7 @@
 <meta name="description" content="Unlock earning programs, complete quick daily tasks, and cash out to M-Pesa. PesaLoop is your phone-powered side income.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --ink:#08201b;
@@ -380,6 +381,62 @@
   .auth-error.show{ display:block; }
   .auth-success{ display:none; margin-top:18px; text-align:center; }
   .auth-success.show{ display:block; }
+
+  /* ---------- DASHBOARD DETAIL ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; margin-bottom:24px; }
+  @media (max-width: 900px){ .stat-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width: 520px){ .stat-grid{ grid-template-columns:1fr; } }
+  .stat-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  .stat-label{ font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; }
+  .stat-value{ font-size:1.5rem; font-weight:700; color:var(--cream); margin-top:8px; }
+  .stat-hint{ font-size:0.78rem; color:var(--muted); margin-top:6px; }
+
+  .dash-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  @media (max-width: 900px){ .dash-grid{ grid-template-columns:1fr; } }
+  .dash-panel{ background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:26px; }
+  .panel-title{ font-size:1.1rem; font-family:'Space Grotesk',sans-serif; }
+  .panel-sub{ font-size:0.85rem; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+  .referral-empty{ font-size:0.82rem; color:var(--muted); margin-top:16px; }
+  .referral-log, .support-log{ list-style:none; padding:0; margin:14px 0 0; display:flex; flex-direction:column; gap:8px; }
+  .referral-log li, .support-log li{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+    font-size:0.82rem; color:var(--cream); display:flex; justify-content:space-between; gap:10px;
+  }
+  .referral-log li span, .support-log li span{ color:var(--muted); font-size:0.76rem; }
+
+  .form-group textarea{
+    width:100%; background:var(--ink-2); border:1px solid var(--line); border-radius:12px;
+    padding:13px 14px; color:var(--cream); font-family:'Inter',sans-serif; font-size:0.9rem;
+    resize:vertical; min-height:90px; transition:border-color .18s ease;
+  }
+  .form-group textarea:focus{ outline:none; border-color:var(--green); }
+
+  .support-success{ display:none; margin-top:16px; }
+  .support-success.show{ display:block; }
+
+  /* ---------- MULTI-STEP AUTH ---------- */
+  .step-dots{ display:flex; gap:6px; margin-top:14px; }
+  .step-dots span{ width:22px; height:4px; border-radius:4px; background:var(--line); }
+  .step-dots span.active{ background:var(--green); }
+  .auth-step{ display:none; }
+  .auth-step.active{ display:block; }
+
+  .google-btn{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+    background:#fff; color:#1f1f1f; border:1px solid var(--line); border-radius:12px;
+    padding:12px; font-weight:600; font-size:0.9rem; cursor:pointer; font-family:'Inter',sans-serif;
+    transition:box-shadow .18s ease;
+  }
+  .google-btn:hover{ box-shadow:0 4px 14px rgba(0,0,0,0.25); }
+  .google-g{ width:18px; height:18px; flex:none; }
+
+  .auth-divider{ display:flex; align-items:center; gap:12px; margin:18px 0; color:var(--muted); font-size:0.78rem; }
+  .auth-divider::before, .auth-divider::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+  .mpesa-hint{ font-size:0.78rem; color:var(--muted); margin-top:8px; }
+  .back-link{ display:inline-block; margin-top:14px; font-size:0.85rem; color:var(--muted); cursor:pointer; }
+  .back-link:hover{ color:var(--cream); }
 </style>
 </head>
 <body>
@@ -416,14 +473,82 @@
         </div>
         <button class="btn btn-primary btn-lg" onclick="openAuth('signup')">Create free account</button>
       </div>
-      <div class="dash-card dash-card--in" id="dashUser" style="display:none;">
-        <div class="dash-avatar" id="dashAvatar">P</div>
-        <div style="flex:1;">
-          <div class="section-eyebrow">Welcome back</div>
-          <h2 style="font-size:1.5rem; margin-top:4px;" id="dashName">There</h2>
-          <p class="sub" style="margin-top:6px;" id="dashEmail">—</p>
+
+      <div id="dashUser" style="display:none;">
+        <div class="dash-card" style="margin-bottom:24px;">
+          <div class="dash-avatar" id="dashAvatar">P</div>
+          <div style="flex:1;">
+            <div class="section-eyebrow">Welcome back</div>
+            <h2 style="font-size:1.5rem; margin-top:4px;" id="dashName">There</h2>
+            <p class="sub" style="margin-top:6px;" id="dashEmail">—</p>
+          </div>
+          <button class="btn btn-ghost" onclick="logoutUser()">Log out</button>
         </div>
-        <button class="btn btn-ghost" onclick="logoutUser()">Log out</button>
+
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-label">Task wallet</div>
+            <div class="stat-value mono" id="statBalance">KSh 0</div>
+            <div class="stat-hint">Grows as you complete tasks</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Referral wallet</div>
+            <div class="stat-value mono" id="statReferralBalance">KSh 0</div>
+            <div class="stat-hint">From people you've invited</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Referrals</div>
+            <div class="stat-value mono" id="statReferralCount">0</div>
+            <div class="stat-hint">Total people invited</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">M-Pesa on file</div>
+            <div class="stat-value mono" id="statMpesa">—</div>
+            <div class="stat-hint">Payouts go here</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="dash-panel">
+            <h3 class="panel-title">Your referral link</h3>
+            <p class="panel-sub">Share this — when someone signs up and unlocks a program, your referral wallet gets credited.</p>
+            <div class="till-box" style="margin-top:14px;">
+              <div style="overflow:hidden;">
+                <div class="label">Referral code</div>
+                <div class="num mono" id="referralCode" style="font-size:1.05rem; word-break:break-all;">—</div>
+              </div>
+              <button class="copy-btn" id="copyRefBtn" onclick="copyReferralLink()">Copy link</button>
+            </div>
+            <div class="referral-empty" id="referralEmpty">No referrals yet — invite friends to see them here.</div>
+            <ul class="referral-log" id="referralLog"></ul>
+          </div>
+
+          <div class="dash-panel">
+            <h3 class="panel-title">Need help?</h3>
+            <p class="panel-sub">Submit a request and our team will follow up with you.</p>
+            <form id="supportForm" onsubmit="return handleSupportSubmit(event)">
+              <div class="form-group">
+                <label for="supportSubject">Subject</label>
+                <input type="text" id="supportSubject" placeholder="e.g. Withdrawal not received" required>
+              </div>
+              <div class="form-group">
+                <label for="supportMessage">Message</label>
+                <textarea id="supportMessage" placeholder="Describe your issue or question…" required rows="4"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary modal-submit">Submit request</button>
+            </form>
+            <div class="support-success" id="supportSuccess">
+              <div class="pending-card" style="background:rgba(0,195,137,0.08); border-color:rgba(0,195,137,0.35);">
+                <div class="pending-icon" style="animation:none; color:var(--green); background:rgba(0,195,137,0.18);">✓</div>
+                <div style="text-align:left;">
+                  <h4>Request submitted</h4>
+                  <p>Reference <span class="pending-code" id="supportRefId"></span> — we'll follow up with you shortly.</p>
+                </div>
+              </div>
+            </div>
+            <ul class="support-log" id="supportLog"></ul>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -452,7 +577,7 @@
           <div class="phone-screen">
             <div class="balance-card">
               <div class="label" id="phoneLabel">Total wallet</div>
-              <div class="amt mono">KSh 4,850</div>
+              <div class="amt mono" id="phoneAmt">KSh 4,850</div>
             </div>
             <div class="ticker-title">Live payouts</div>
             <div class="ticker-viewport">
@@ -653,35 +778,64 @@
     <div class="modal-eyebrow">PesaLoop account</div>
     <h3 class="modal-title" id="authTitle">Create your account</h3>
     <p class="modal-desc" id="authDesc">Sign up free to unlock programs and track your earnings.</p>
+    <div class="step-dots" id="stepDots">
+      <span class="active" data-step="1"></span>
+      <span data-step="2"></span>
+      <span data-step="3"></span>
+    </div>
 
-    <div class="auth-tabs">
+    <div class="auth-tabs" id="authTabs">
       <button type="button" class="auth-tab active" id="tabSignup" onclick="switchAuthTab('signup')">Sign up</button>
       <button type="button" class="auth-tab" id="tabLogin" onclick="switchAuthTab('login')">Log in</button>
     </div>
 
-    <form id="authForm" onsubmit="return handleAuthSubmit(event)">
-      <div class="form-group" id="nameField">
-        <label for="authName">Full name</label>
-        <input type="text" id="authName" placeholder="e.g. Faith Wanjiru" autocomplete="name">
-      </div>
-      <div class="form-group">
-        <label for="authEmail">Email address</label>
-        <input type="email" id="authEmail" placeholder="you@example.com" required autocomplete="email">
-      </div>
-      <div class="form-group">
-        <label for="authPassword">Password</label>
-        <input type="password" id="authPassword" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6">
-      </div>
-      <div class="auth-error" id="authError"></div>
-      <button type="submit" class="btn btn-primary modal-submit" id="authSubmitBtn">Create account</button>
-    </form>
+    <!-- STEP 1: method -->
+    <div class="auth-step active" id="authStep1">
+      <button type="button" class="google-btn" onclick="handleGoogleClick()">
+        <svg class="google-g" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 16.3 3 9.7 7.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 36.4 26.7 37 24 37c-5.2 0-9.6-3.3-11.2-8l-6.5 5C9.6 40.5 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.2 5.2C40.9 36 44 30.5 44 24c0-1.4-.1-2.7-.4-3.5z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider">or continue with email</div>
 
-    <div class="auth-success" id="authSuccess">
-      <div class="pending-card" style="background:rgba(0,195,137,0.08); border-color:rgba(0,195,137,0.35);">
-        <div class="pending-icon" style="animation:none; color:var(--green); background:rgba(0,195,137,0.18);">✓</div>
-        <div style="text-align:left;">
-          <h4 id="authSuccessTitle">You're in!</h4>
-          <p id="authSuccessMsg">Redirecting you to your dashboard…</p>
+      <form id="authFormStep1" onsubmit="return handleStep1Submit(event)">
+        <div class="form-group" id="nameField">
+          <label for="authName">Full name</label>
+          <input type="text" id="authName" placeholder="e.g. Faith Wanjiru" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="authEmail">Email address</label>
+          <input type="email" id="authEmail" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6">
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <button type="submit" class="btn btn-primary modal-submit" id="authSubmitBtn">Continue</button>
+      </form>
+    </div>
+
+    <!-- STEP 2: payment info (signup only) -->
+    <div class="auth-step" id="authStep2">
+      <div class="form-group">
+        <label for="mpesaNumber">M-Pesa number (international format)</label>
+        <input type="text" id="mpesaNumber" placeholder="254712345678" inputmode="numeric" maxlength="12">
+        <div class="mpesa-hint">Start with 254, no leading 0 — e.g. 0712 345 678 becomes <b>254712345678</b>. This is where payouts will be sent.</div>
+      </div>
+      <div class="auth-error" id="mpesaError"></div>
+      <button type="button" class="btn btn-primary modal-submit" onclick="handleStep2Submit()">Finish setting up</button>
+      <span class="back-link" onclick="goToAuthStep(1)">← Back</span>
+    </div>
+
+    <!-- STEP 3: success -->
+    <div class="auth-step" id="authStep3">
+      <div class="auth-success show">
+        <div class="pending-card" style="background:rgba(0,195,137,0.08); border-color:rgba(0,195,137,0.35);">
+          <div class="pending-icon" style="animation:none; color:var(--green); background:rgba(0,195,137,0.18);">✓</div>
+          <div style="text-align:left;">
+            <h4 id="authSuccessTitle">You're in!</h4>
+            <p id="authSuccessMsg">Redirecting you to your dashboard…</p>
+          </div>
         </div>
       </div>
     </div>
@@ -821,6 +975,15 @@
     return fullName.trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
   }
 
+  function generateReferralCode(name){
+    const base = (name.split(' ')[0] || 'user').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return base + Math.floor(1000 + Math.random() * 9000);
+  }
+
+  function formatKsh(n){
+    return 'KSh ' + Number(n || 0).toLocaleString('en-KE');
+  }
+
   function renderAuthState(){
     const email = getSession();
     const users = getUsers();
@@ -830,10 +993,11 @@
     const navLoginBtn = document.getElementById('navLoginBtn');
     const navSignupBtn = document.getElementById('navSignupBtn');
     const phoneLabel = document.getElementById('phoneLabel');
+    const phoneAmt = document.getElementById('phoneAmt');
 
     if (user) {
       dashGuest.style.display = 'none';
-      dashUser.style.display = 'flex';
+      dashUser.style.display = 'block';
       document.getElementById('dashAvatar').textContent = nameInitials(user.name) || 'P';
       document.getElementById('dashName').textContent = user.name;
       document.getElementById('dashEmail').textContent = user.email;
@@ -841,6 +1005,34 @@
       navSignupBtn.textContent = user.name.split(' ')[0];
       navSignupBtn.onclick = (e) => { e.preventDefault(); window.location.hash = '#dashboard'; };
       if (phoneLabel) phoneLabel.textContent = user.name.split(' ')[0] + "'s wallet";
+      if (phoneAmt) phoneAmt.textContent = formatKsh(user.balance || 0);
+
+      // Wallets always start at zero and only move if you wire up real task
+      // completion / referral crediting logic on a backend — nothing here
+      // fabricates earnings.
+      document.getElementById('statBalance').textContent = formatKsh(user.balance || 0);
+      document.getElementById('statReferralBalance').textContent = formatKsh(user.referralBalance || 0);
+      document.getElementById('statReferralCount').textContent = (user.referrals || []).length;
+      document.getElementById('statMpesa').textContent = user.mpesa || 'Not set';
+      document.getElementById('referralCode').textContent =
+        window.location.origin + window.location.pathname + '?ref=' + user.referralCode;
+
+      const refList = user.referrals || [];
+      const refLog = document.getElementById('referralLog');
+      const refEmpty = document.getElementById('referralEmpty');
+      refLog.innerHTML = '';
+      if (refList.length === 0) {
+        refEmpty.style.display = 'block';
+      } else {
+        refEmpty.style.display = 'none';
+        refList.forEach(r => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${r.name}</span><span>${r.date}</span>`;
+          refLog.appendChild(li);
+        });
+      }
+
+      renderSupportLog(user.email);
     } else {
       dashGuest.style.display = 'flex';
       dashUser.style.display = 'none';
@@ -848,6 +1040,7 @@
       navSignupBtn.textContent = 'Get started';
       navSignupBtn.onclick = (e) => { e.preventDefault(); openAuth('signup'); };
       if (phoneLabel) phoneLabel.textContent = 'Total wallet';
+      if (phoneAmt) phoneAmt.textContent = 'KSh 4,850';
     }
   }
 
@@ -856,20 +1049,73 @@
     renderAuthState();
   }
 
-  // ---- Auth modal ----
+  function copyReferralLink(){
+    const link = document.getElementById('referralCode').textContent.trim();
+    const btn = document.getElementById('copyRefBtn');
+    navigator.clipboard.writeText(link).then(() => {
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = 'Copy link'; }, 1800);
+    });
+  }
+
+  // ---- Support tickets (stored locally, no live backend) ----
+  const SUPPORT_KEY = 'pesaloop_support_tickets';
+  function getSupportTickets(){
+    try { return JSON.parse(localStorage.getItem(SUPPORT_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveSupportTickets(list){ localStorage.setItem(SUPPORT_KEY, JSON.stringify(list)); }
+
+  function renderSupportLog(email){
+    const tickets = getSupportTickets().filter(t => t.email === email);
+    const log = document.getElementById('supportLog');
+    log.innerHTML = '';
+    tickets.slice().reverse().forEach(t => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${t.subject}</span><span>#${t.ref}</span>`;
+      log.appendChild(li);
+    });
+  }
+
+  function handleSupportSubmit(e){
+    e.preventDefault();
+    const email = getSession();
+    const subject = document.getElementById('supportSubject').value.trim();
+    const message = document.getElementById('supportMessage').value.trim();
+    if (!subject || !message) return false;
+    const ref = 'SP' + Date.now().toString().slice(-6);
+    const tickets = getSupportTickets();
+    tickets.push({ email, subject, message, ref, date: new Date().toLocaleDateString('en-KE') });
+    saveSupportTickets(tickets);
+
+    document.getElementById('supportForm').style.display = 'none';
+    document.getElementById('supportRefId').textContent = '#' + ref;
+    document.getElementById('supportSuccess').classList.add('show');
+    renderSupportLog(email);
+
+    setTimeout(() => {
+      document.getElementById('supportForm').reset();
+      document.getElementById('supportForm').style.display = 'block';
+      document.getElementById('supportSuccess').classList.remove('show');
+    }, 4000);
+    return false;
+  }
+
+  // ---- Auth modal (multi-step: method -> payment info -> success) ----
   const authOverlay = document.getElementById('authOverlay');
-  const authForm = document.getElementById('authForm');
+  const authFormStep1 = document.getElementById('authFormStep1');
   const authError = document.getElementById('authError');
-  const authSuccess = document.getElementById('authSuccess');
   const nameField = document.getElementById('nameField');
   const authName = document.getElementById('authName');
   const authEmail = document.getElementById('authEmail');
   const authPassword = document.getElementById('authPassword');
   const authSubmitBtn = document.getElementById('authSubmitBtn');
   let authMode = 'signup';
+  let pendingUser = null; // holds { name, email, password? } between steps
 
   function openAuth(mode){
     switchAuthTab(mode || 'signup');
+    goToAuthStep(1);
     authOverlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -880,12 +1126,19 @@
   document.getElementById('authClose').addEventListener('click', closeAuth);
   authOverlay.addEventListener('click', (e) => { if (e.target === authOverlay) closeAuth(); });
 
+  function goToAuthStep(step){
+    document.querySelectorAll('.auth-step').forEach(el => el.classList.remove('active'));
+    document.getElementById('authStep' + step).classList.add('active');
+    document.querySelectorAll('#stepDots span').forEach(dot => {
+      dot.classList.toggle('active', Number(dot.dataset.step) <= step);
+    });
+    document.getElementById('authTabs').style.display = step === 1 ? 'flex' : 'none';
+  }
+
   function switchAuthTab(mode){
     authMode = mode;
-    authForm.style.display = 'block';
-    authSuccess.classList.remove('show');
     authError.classList.remove('show');
-    authForm.reset();
+    authFormStep1.reset();
     document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
     document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
     if (mode === 'signup') {
@@ -893,13 +1146,15 @@
       document.getElementById('authDesc').textContent = 'Sign up free to unlock programs and track your earnings.';
       nameField.style.display = 'block';
       authName.setAttribute('required', 'required');
-      authSubmitBtn.textContent = 'Create account';
+      authSubmitBtn.textContent = 'Continue';
+      document.getElementById('stepDots').style.display = 'flex';
     } else {
       document.getElementById('authTitle').textContent = 'Welcome back';
       document.getElementById('authDesc').textContent = 'Log in with the email you signed up with.';
       nameField.style.display = 'none';
       authName.removeAttribute('required');
       authSubmitBtn.textContent = 'Log in';
+      document.getElementById('stepDots').style.display = 'none'; // login is a single step
     }
   }
 
@@ -908,7 +1163,21 @@
     authError.classList.add('show');
   }
 
-  function handleAuthSubmit(e){
+  function finishAuthSuccess(user, isNew){
+    setSession(user.email);
+    goToAuthStep(3);
+    document.getElementById('authSuccessTitle').textContent =
+      (isNew ? 'Welcome, ' : 'Welcome back, ') + user.name.split(' ')[0] + '!';
+    document.getElementById('authSuccessMsg').textContent = 'Heading to your dashboard…';
+    renderAuthState();
+    setTimeout(() => {
+      closeAuth();
+      document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+    }, 1100);
+  }
+
+  // Step 1: email/password (or the name+email captured after Google)
+  function handleStep1Submit(e){
     e.preventDefault();
     authError.classList.remove('show');
     const email = authEmail.value.trim().toLowerCase();
@@ -922,36 +1191,89 @@
         showAuthError('An account with this email already exists — try logging in instead.');
         return false;
       }
-      users.push({ name, email, password });
-      saveUsers(users);
-      setSession(email);
-      authForm.style.display = 'none';
-      document.getElementById('authSuccessTitle').textContent = `Welcome, ${name.split(' ')[0]}!`;
-      document.getElementById('authSuccessMsg').textContent = 'Your account is ready — heading to your dashboard…';
-      authSuccess.classList.add('show');
-      renderAuthState();
-      setTimeout(() => {
-        closeAuth();
-        document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
-      }, 1100);
+      pendingUser = { name, email, password, provider: 'email' };
+      goToAuthStep(2); // collect M-Pesa number before finishing
     } else {
       const user = users.find(u => u.email === email);
-      if (!user || user.password !== password) {
+      if (!user || (user.provider !== 'google' && user.password !== password)) {
         showAuthError('That email and password combination doesn\'t match an account.');
         return false;
       }
-      setSession(email);
-      authForm.style.display = 'none';
-      document.getElementById('authSuccessTitle').textContent = `Welcome back, ${user.name.split(' ')[0]}!`;
-      document.getElementById('authSuccessMsg').textContent = 'Heading to your dashboard…';
-      authSuccess.classList.add('show');
-      renderAuthState();
-      setTimeout(() => {
-        closeAuth();
-        document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
-      }, 1100);
+      finishAuthSuccess(user, false);
     }
     return false;
+  }
+
+  // Step 2: M-Pesa number, then create the account for real
+  function handleStep2Submit(){
+    const mpesaError = document.getElementById('mpesaError');
+    mpesaError.classList.remove('show');
+    const mpesa = document.getElementById('mpesaNumber').value.trim();
+    const valid = /^254\d{9}$/.test(mpesa);
+    if (!valid) {
+      mpesaError.textContent = 'Enter a valid number starting with 254, followed by 9 digits (e.g. 254712345678).';
+      mpesaError.classList.add('show');
+      return;
+    }
+    const users = getUsers();
+    const newUser = {
+      name: pendingUser.name,
+      email: pendingUser.email,
+      password: pendingUser.password || null,
+      provider: pendingUser.provider,
+      mpesa,
+      balance: 0,            // wallets always start at zero
+      referralBalance: 0,
+      referralCode: generateReferralCode(pendingUser.name),
+      referrals: []
+    };
+    users.push(newUser);
+    saveUsers(users);
+    finishAuthSuccess(newUser, true);
+  }
+
+  // ---- Google Sign-In scaffold ----
+  // Replace this with your own OAuth Client ID from Google Cloud Console
+  // (APIs & Services > Credentials > OAuth client ID > Web application).
+  // Until a real ID is set, the button explains it isn't configured instead
+  // of faking a login.
+  const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+
+  function handleGoogleClick(){
+    if (GOOGLE_CLIENT_ID.startsWith('YOUR_GOOGLE_CLIENT_ID')) {
+      showAuthError('Google sign-in isn\'t configured yet on this site — add a real Google OAuth Client ID in the code, or continue with email below.');
+      return;
+    }
+    if (window.google && google.accounts && google.accounts.id) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential
+      });
+      google.accounts.id.prompt();
+    } else {
+      showAuthError('Google sign-in library failed to load. Check your internet connection and try again.');
+    }
+  }
+
+  function handleGoogleCredential(response){
+    // Client-side only decode of the ID token payload to read name/email.
+    // In a real app, send response.credential to your backend and verify
+    // it with Google before trusting it.
+    try {
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      const email = (payload.email || '').toLowerCase();
+      const name = payload.name || email.split('@')[0];
+      const users = getUsers();
+      const existing = users.find(u => u.email === email);
+      if (existing) {
+        finishAuthSuccess(existing, false);
+      } else {
+        pendingUser = { name, email, password: null, provider: 'google' };
+        goToAuthStep(2);
+      }
+    } catch {
+      showAuthError('Something went wrong reading your Google account. Please try email instead.');
+    }
   }
 
   // Render whatever session already exists on page load
