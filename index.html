@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PesaLoop — Surveys + AI Training</title>
-  <meta name="description" content="Earn daily with surveys and AI training. Subscribe to unlock premium tasks.">
+  <title>PesaLoop — Surveys & AI Training</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <style>
@@ -61,6 +60,15 @@
     .progress-bar { height: 6px; background: #1f4a3e; border-radius: 8px; margin: 6px 0; }
     .progress-fill { height: 100%; background: var(--green); border-radius: 8px; width: 0%; }
     .till-box { background: #0a1f1a; border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); }
+    .faq-item { border-bottom: 1px solid var(--line); padding: 12px 0; }
+    .faq-item summary { font-weight: 600; cursor: pointer; color: var(--gold); }
+    .faq-item p { color: var(--muted); padding-top: 6px; }
+    .ticker { background: #0e2b24; border-radius: 40px; padding: 8px 18px; display: inline-flex; align-items: center; gap: 12px; }
+    .ticker .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+    .compare-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .compare-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    .compare-table tr:last-child td { border-bottom: none; }
   </style>
 </head>
 <body>
@@ -68,6 +76,7 @@
   <header class="flex-between" style="padding: 12px 0; border-bottom: 1px solid var(--line);">
     <div class="flex"><span style="background:var(--green); color:#08201b; font-weight:700; padding:4px 12px; border-radius:8px;">P</span><span style="font-weight:700; font-size:1.3rem;">PesaLoop</span></div>
     <div class="flex">
+      <span class="ticker"><span class="dot"></span> <span class="mono" style="font-size:0.85rem;">KSh 2.4M+ paid out</span></span>
       <span id="dashGreet" style="color:var(--muted);">👋 Guest</span>
       <button class="btn btn-outline" id="loginBtn" onclick="openAuth()">Login</button>
       <button class="btn" id="signupBtn" onclick="openAuth()">Get Started</button>
@@ -80,7 +89,7 @@
       <div>
         <span class="badge">📱 Paid via M-Pesa</span>
         <h1 style="font-size:2.6rem; font-weight:700; margin:12px 0;">Earn with <span style="color:var(--green);">Surveys</span> & <span style="color:var(--gold);">AI Training</span></h1>
-        <p style="color:var(--muted); max-width:480px;">Complete surveys, train AI models, and withdraw daily. Subscribe to unlock premium tasks.</p>
+        <p style="color:var(--muted); max-width:480px;">Complete surveys, train AI models, and withdraw daily. Transparent fees, no surprises.</p>
         <div class="flex" style="margin-top:20px;">
           <button class="btn" onclick="openAuth()">Start Earning</button>
           <span class="text-muted" style="font-size:0.9rem;">🔥 2,400+ active earners</span>
@@ -99,6 +108,7 @@
         <div class="flex" style="margin-top:8px;"><span class="text-muted">withdraw threshold:</span> <span class="mono" style="color:var(--gold);">KSh 200</span></div>
         <div class="progress-bar" style="margin:12px 0;"><div class="progress-fill" id="progressToWithdraw" style="width:0%;"></div></div>
         <button class="btn btn-gold" onclick="handleWithdraw()" style="width:100%;">Withdraw (min 200 KSh)</button>
+        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">No withdrawal fee — we cover processing costs.</div>
       </div>
     </div>
   </section>
@@ -110,30 +120,32 @@
       <!-- Surveys -->
       <div class="card">
         <div class="flex-between"><span>📋 Surveys</span><span class="badge" id="surveyCountBadge">0/10 active</span></div>
-        <p class="text-muted" style="font-size:0.9rem;">Each survey has 100 tasks. Earn 50 KSh per 5 completed surveys.</p>
+        <p class="text-muted" style="font-size:0.9rem;">10 surveys · 100 tasks each. Earn 50 KSh per 5 completed surveys.</p>
         <div id="surveyList" style="max-height:300px; overflow-y:auto; margin:12px 0;"></div>
         <button class="btn btn-outline" style="width:100%;" onclick="doSurveyTask()">➕ Do a survey task</button>
-        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">Subscription required after 150 KSh balance</div>
+        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">No subscription needed for surveys.</div>
       </div>
       <!-- AI Training -->
       <div class="card" style="border-color: rgba(245,185,66,0.3);">
         <div class="flex-between"><span>🧠 AI Training</span><span class="badge" style="background:rgba(245,185,66,0.2); color:var(--gold);">⭐ Premium</span></div>
-        <p class="text-muted" style="font-size:0.9rem;">100 tasks · 15 KSh / 10 min. Subscribe to unlock: <span class="mono" style="color:var(--gold);">450 KSh</span></p>
+        <p class="text-muted" style="font-size:0.9rem;">100 tasks · 15 KSh / ~10 min task. Unlock with one payment: <span class="mono" style="color:var(--gold);">450 KSh</span></p>
         <div id="aiTaskList" style="max-height:200px; overflow-y:auto; margin:12px 0;"></div>
         <button class="btn" style="width:100%; background:var(--gold); color:#0a1f1a;" onclick="handleAISubscription()">🔓 Subscribe to AI (450 KSh)</button>
-        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">Earn 15 KSh per 10-min task</div>
+        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">One-time fee · no recurring charges.</div>
       </div>
-      <!-- Trusted companies -->
+      <!-- Why go Premium -->
       <div class="card" style="background:#0e2b24;">
-        <h3 style="font-size:1.1rem;">🤝 Trusted partners</h3>
-        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
-          <span class="trust-pill">Handshake AI</span><span class="trust-pill">Outlier</span>
-          <span class="trust-pill">Prolific</span><span class="trust-pill">Scale AI</span>
-          <span class="trust-pill">Appen</span><span class="trust-pill">Lionbridge</span>
-          <span class="trust-pill">CloudFactory</span><span class="trust-pill">Sama</span>
-          <span class="trust-pill">Clickworker</span><span class="trust-pill">TELUS</span>
+        <h3 style="font-size:1.1rem;">📊 Surveys vs AI Training</h3>
+        <table class="compare-table">
+          <tr><td><strong>Surveys</strong></td><td>50 KSh / 5 tasks</td><td>~5-10 min each</td></tr>
+          <tr><td><strong>AI Training</strong></td><td>15 KSh / task</td><td>~10 min each</td></tr>
+          <tr><td colspan="3" style="color:var(--gold); font-size:0.9rem;">AI pays 3× more per task, with consistent availability.</td></tr>
+        </table>
+        <div class="trust-row" style="margin-top:12px;">
+          <span class="trust-pill">🔒 No hidden fees</span>
+          <span class="trust-pill">📅 Daily tasks</span>
+          <span class="trust-pill">💸 Withdraw anytime</span>
         </div>
-        <p class="text-muted" style="font-size:0.85rem; margin-top:16px;">Join the same ecosystem used by top AI companies. Earn real money with your phone.</p>
       </div>
     </div>
   </section>
@@ -149,17 +161,29 @@
     </div>
     <div class="flex" style="margin-top:12px; gap:16px;">
       <span class="text-muted">🔹 Subscription: <span id="subscriptionStatus">None</span></span>
-      <span class="text-muted">🔸 Withdrawal fee: <span class="mono">100 KSh</span></span>
+      <span class="text-muted">🔸 Withdrawal fee: <span class="mono" style="color:var(--green);">0 KSh</span></span>
     </div>
   </section>
 
-  <!-- SUBSCRIPTION / WITHDRAWAL MODAL -->
-  <div class="modal" id="globalModal">
-    <div class="modal-card">
-      <button class="close" onclick="closeModal()">✕</button>
-      <h3 id="modalTitle">Action</h3>
-      <div id="modalBody"></div>
+  <!-- FAQ & TERMS -->
+  <section style="padding: 20px 0 40px;">
+    <div class="card">
+      <h3>📖 FAQ & Transparency</h3>
+      <div class="faq-item"><summary>How do I withdraw?</summary><p>Minimum balance 200 KSh. No withdrawal fee — we cover M-Pesa costs. Withdrawals processed within 24 hours.</p></div>
+      <div class="faq-item"><summary>What's the AI Training subscription?</summary><p>One-time 450 KSh payment unlocks 100 AI tasks. Each task pays 15 KSh (~10 min). No recurring fees.</p></div>
+      <div class="faq-item"><summary>Are my earnings safe?</summary><p>Yes. All balances are tracked on our secure ledger. We use M-Pesa for payouts — same system used by millions.</p></div>
+      <div class="faq-item"><summary>Who are your partners?</summary><p>We work with Handshake AI, Outlier, Prolific, Scale AI, Appen, Lionbridge, CloudFactory, Sama, Clickworker, and TELUS.</p></div>
+      <div class="text-muted" style="margin-top:12px; font-size:0.85rem;">Terms: By using PesaLoop you agree to our terms. All payments are final. We reserve the right to verify tasks.</div>
     </div>
+  </section>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="globalModal">
+  <div class="modal-card">
+    <button class="close" onclick="closeModal()">✕</button>
+    <h3 id="modalTitle">Action</h3>
+    <div id="modalBody"></div>
   </div>
 </div>
 
@@ -168,18 +192,18 @@
   let user = {
     name: 'Guest',
     email: 'guest@example.com',
-    balance: 0,           // total balance (survey + AI)
+    balance: 0,
     surveyBalance: 0,
     aiBalance: 0,
-    surveyProgress: 0,    // number of surveys completed (resets after 5)
-    surveyTasksDone: 0,   // total survey tasks done (across all surveys)
+    surveyProgress: 0,      // count toward next 5-survey bonus
+    surveyTasksDone: 0,
     aiTasksDone: 0,
-    subscription: false,  // AI subscription active?
+    subscription: false,
     withdrawals: 0,
     referralCode: 'PESALOOP123'
   };
 
-  // 10 surveys, each with 100 tasks
+  // 10 surveys × 100 tasks
   const SURVEYS = Array.from({ length: 10 }, (_, i) => ({
     id: i+1,
     name: `Survey ${i+1}`,
@@ -187,7 +211,7 @@
     done: 0
   }));
 
-  // AI tasks (100)
+  // 100 AI tasks
   let aiTasks = Array.from({ length: 100 }, (_, i) => ({ id: i+1, done: false }));
 
   // DOM refs
@@ -223,7 +247,6 @@
     const done = aiTasks.filter(t => t.done).length;
     const total = aiTasks.length;
     let html = `<div class="flex-between"><span class="text-muted">Progress</span><span>${done}/${total}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${(done/total)*100}%;"></div></div>`;
-    // show last 5
     const recent = aiTasks.slice(-5).reverse();
     recent.forEach(t => {
       html += `<div class="task-item" style="font-size:0.85rem;">Task #${t.id} ${t.done ? '✅' : '⏳'}</div>`;
@@ -242,7 +265,6 @@
     subscriptionStatus.textContent = user.subscription ? '✅ Active (AI)' : '❌ None';
     userEmailDisplay.textContent = user.email;
     dashGreet.textContent = `👋 ${user.name}`;
-    // progress to withdraw (threshold 200)
     const pct = Math.min(100, (total / 200) * 100);
     progressToWithdraw.style.width = `${pct}%`;
     renderSurveys();
@@ -251,13 +273,6 @@
 
   // ======== SURVEY LOGIC ========
   function doSurveyTask() {
-    // check if subscription needed: if balance >= 150 and no subscription, block
-    if (user.balance >= 150 && !user.subscription) {
-      showModal('Subscription Required', `<p>You've reached KSh 150. To continue earning with surveys, you need to subscribe to the AI Training program (450 KSh).</p><button class="btn" onclick="handleAISubscription()">Subscribe Now</button>`);
-      return;
-    }
-
-    // find a survey with remaining tasks
     let target = SURVEYS.find(s => s.done < s.total);
     if (!target) {
       showModal('All surveys complete', 'Great job! You’ve completed all survey tasks. Check back later for more.');
@@ -267,17 +282,12 @@
     user.surveyTasksDone++;
     user.surveyProgress++;
 
-    // every 5 surveys → +50 KSh
     if (user.surveyProgress >= 5) {
       user.surveyBalance += 50;
       user.surveyProgress = 0;
       showModal('🎉 Bonus!', 'You completed 5 surveys! +50 KSh added to your survey balance.');
     }
     updateDashboard();
-    // re-check subscription block after update
-    if (user.balance >= 150 && !user.subscription) {
-      showModal('Subscription Recommended', 'You now have KSh 150+. To keep earning, subscribe to AI Training (450 KSh).');
-    }
   }
 
   // ======== AI LOGIC ========
@@ -286,10 +296,9 @@
       showModal('Already subscribed', 'You have an active AI subscription. Enjoy the tasks!');
       return;
     }
-    // simulate till payment
     showModal('🔓 Subscribe to AI Training', `
       <p>Pay <strong>450 KSh</strong> to M-Pesa Till <span class="mono" style="background:#0a1f1a; padding:4px 12px; border-radius:40px;">7968544</span></p>
-      <p>After payment, click confirm.</p>
+      <p>One-time payment — unlocks 100 AI tasks.</p>
       <button class="btn" onclick="confirmSubscription()">✅ Confirm payment</button>
       <p class="text-muted" style="font-size:0.8rem; margin-top:8px;">We'll verify with Safaricom (simulated).</p>
     `);
@@ -297,10 +306,8 @@
 
   function confirmSubscription() {
     user.subscription = true;
-    // unlock AI tasks: all become available
     updateDashboard();
-    showModal('✅ Subscribed!', 'You now have access to 100 AI training tasks. Earn 15 KSh per 10-min task.');
-    // enable AI tasks
+    showModal('✅ Subscribed!', 'You now have access to 100 AI training tasks. Earn 15 KSh per ~10-min task.');
   }
 
   function doAITask() {
@@ -317,10 +324,6 @@
     user.aiBalance += 15;
     user.balance += 15;
     updateDashboard();
-    // after each AI task, check if balance >= 300 to suggest withdrawal
-    if (user.balance >= 300) {
-      showModal('💰 Withdrawal ready!', 'Your balance is KSh 300+. You can withdraw now. Fee: 100 KSh.');
-    }
   }
 
   // ======== WITHDRAWAL ========
@@ -329,21 +332,14 @@
       showModal('Withdrawal', 'Minimum withdrawal is KSh 200. Keep earning!');
       return;
     }
-    if (user.balance < 300) {
-      showModal('Withdrawal', 'You need at least KSh 300 to withdraw (fee 100 KSh). Keep going!');
-      return;
-    }
-    // withdrawal: deduct 100 fee
-    const fee = 100;
-    const amount = user.balance - fee;
-    if (amount <= 0) { showModal('Error','Balance too low after fee.'); return; }
-    // simulate M-Pesa send
+    // No fee — we cover costs
+    const amount = user.balance;
     user.balance = 0;
     user.surveyBalance = 0;
     user.aiBalance = 0;
     user.withdrawals++;
     updateDashboard();
-    showModal('✅ Withdrawal sent!', `KSh ${amount} sent to your M-Pesa (${user.email || 'registered number'}). Fee: ${fee} KSh.`);
+    showModal('✅ Withdrawal sent!', `KSh ${amount} sent to your M-Pesa (${user.email || 'registered number'}). No fees deducted.`);
   }
 
   // ======== MODAL ========
@@ -375,26 +371,23 @@
     const email = document.getElementById('authEmailInput').value || 'earner@demo.com';
     user.name = name;
     user.email = email;
-    // generate referral code if not set
     if (!user.referralCode) user.referralCode = 'PESALOOP' + Math.floor(1000+Math.random()*9000);
     updateDashboard();
     closeModal();
-    // set login buttons
     document.getElementById('loginBtn').textContent = user.name;
     document.getElementById('signupBtn').textContent = 'Account';
     showModal('Welcome!', `You're logged in as ${user.name}. Start earning with surveys and AI tasks.`);
   }
 
-  // ======== SIMULATE AI TASK BUTTON (hidden extra) ========
-  // add quick AI task trigger in dashboard
-  const aiTaskTrigger = document.createElement('button');
-  aiTaskTrigger.textContent = '⚡ Do AI Task (15 KSh)';
-  aiTaskTrigger.className = 'btn btn-outline';
-  aiTaskTrigger.style.marginTop = '8px';
-  aiTaskTrigger.onclick = doAITask;
-  document.querySelector('.grid-2 .stat:last-child').appendChild(aiTaskTrigger);
+  // ======== QUICK ACTION BUTTONS ========
+  // Add AI task button to stats area
+  const aiQuick = document.createElement('button');
+  aiQuick.textContent = '⚡ Do AI Task (15 KSh)';
+  aiQuick.className = 'btn btn-outline';
+  aiQuick.style.marginTop = '8px';
+  aiQuick.onclick = doAITask;
+  document.querySelector('.grid-2 .stat:nth-child(2)').appendChild(aiQuick);
 
-  // also add a quick survey button from stats area
   const surveyQuick = document.createElement('button');
   surveyQuick.textContent = '📝 Do Survey Task';
   surveyQuick.className = 'btn btn-outline';
@@ -404,11 +397,10 @@
 
   // ======== INIT ========
   updateDashboard();
-  // Show welcome tip
   setTimeout(() => {
     showModal('👋 Welcome to PesaLoop', `
-      <p>Complete surveys to earn 50 KSh per 5 tasks. Subscribe to AI Training (450 KSh) to unlock premium tasks and earn 15 KSh per 10-min task.</p>
-      <p><strong>Withdrawal:</strong> min 200 KSh, fee 100 KSh (requires 300 KSh balance).</p>
+      <p>Complete surveys to earn 50 KSh per 5 tasks. Subscribe to AI Training (450 KSh) to unlock premium tasks and earn 15 KSh per ~10-min task.</p>
+      <p><strong>Withdrawal:</strong> min 200 KSh, no fee.</p>
       <p>Trusted by Handshake AI, Outlier, Prolific, and more.</p>
       <button class="btn" onclick="closeModal()">Start earning</button>
     `);
