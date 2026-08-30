@@ -550,19 +550,63 @@
     .compare-row > div:first-child{ font-weight:700; color:var(--cream); }
   }
 
-  /* ---------- SURVEY GRID ---------- */
-  .survey-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:18px; }
-  .survey-card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; }
-  .survey-card h4{ font-size:0.98rem; margin:0 0 6px; font-family:'Space Grotesk',sans-serif; }
-  .survey-card .sc-meta{ font-size:0.78rem; color:var(--muted); margin-bottom:12px; }
-  .survey-card .progress-bar{ margin-bottom:10px; }
-  .survey-card button{
-    width:100%; margin-top:8px; padding:9px; border-radius:10px; font-size:0.82rem;
-    background:var(--green); color:var(--ink); border:none; font-weight:600; cursor:pointer;
+  /* ---------- SURVEY CATALOG (20 categories x 20 surveys) ---------- */
+  .survey-overview{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px;
   }
-  .survey-card button:disabled{ background:var(--surface-2); color:var(--muted); cursor:default; }
-  .survey-card.completed{ border-color:rgba(0,195,137,0.4); }
-  .survey-card .done-tag{ font-size:0.72rem; color:var(--green); font-weight:600; }
+  @media (max-width: 560px){ .survey-overview{ grid-template-columns:1fr; } }
+
+  .survey-categories{ display:flex; flex-direction:column; gap:14px; }
+  .survey-cat{
+    background:var(--surface); border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    transition:border-color .2s ease;
+  }
+  .survey-cat:hover{ border-color:rgba(0,195,137,0.28); }
+  .survey-cat-head{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:14px;
+    background:none; border:none; cursor:pointer; padding:18px 22px; color:var(--cream); text-align:left;
+  }
+  .survey-cat-head .sc-title{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1.02rem; }
+  .survey-cat-head .sc-progress{ font-size:0.78rem; color:var(--muted); margin-top:4px; }
+  .survey-cat-right{ display:flex; align-items:center; gap:14px; flex:none; }
+  .survey-cat-badge{
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--green);
+    background:rgba(0,195,137,0.1); border:1px solid rgba(0,195,137,0.3); border-radius:999px; padding:4px 10px;
+  }
+  .survey-cat-chevron{ color:var(--muted); transition:transform .3s ease; font-size:1.1rem; }
+  .survey-cat.open .survey-cat-chevron{ transform:rotate(180deg); }
+  .survey-cat-body{ max-height:0; overflow:hidden; transition:max-height .4s ease; }
+  .survey-cat.open .survey-cat-body{ max-height:6000px; }
+  .survey-cat-inner{ padding:0 22px 22px; display:flex; flex-direction:column; gap:12px; }
+
+  .survey-item{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px;
+    transition:border-color .2s ease;
+  }
+  .survey-item.done{ border-color:rgba(0,195,137,0.4); background:rgba(0,195,137,0.05); }
+  .survey-item-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .survey-item h5{ font-size:0.9rem; font-weight:600; color:var(--cream); margin:0; }
+  .survey-item .si-num{
+    font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--gold);
+    background:rgba(245,185,66,0.12); border-radius:6px; padding:2px 7px; margin-right:8px;
+  }
+  .survey-item .si-status{ font-size:0.75rem; color:var(--green); font-weight:600; white-space:nowrap; }
+  .survey-options{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:6px; margin-bottom:12px; }
+  .survey-opt{
+    display:flex; align-items:center; gap:7px; font-size:0.78rem; color:var(--muted);
+    padding:6px 8px; border-radius:8px; cursor:pointer; transition:background .15s ease, color .15s ease;
+  }
+  .survey-opt:hover{ background:rgba(237,239,234,0.05); color:var(--cream); }
+  .survey-opt input{ accent-color: var(--green); width:14px; height:14px; flex:none; }
+  .survey-item.done .survey-opt{ pointer-events:none; opacity:0.55; }
+  .survey-submit{
+    width:100%; padding:9px; border-radius:10px; font-size:0.82rem;
+    background:var(--green); color:var(--ink); border:none; font-weight:600; cursor:pointer;
+    transition:background .18s ease, transform .15s ease;
+  }
+  .survey-submit:hover{ background:#04d896; }
+  .survey-submit:active{ transform:scale(0.98); }
+  .survey-submit:disabled{ background:var(--surface-2); color:var(--muted); cursor:default; }
 </style>
 </head>
 <body>
@@ -634,7 +678,7 @@
           </div>
           <div class="stat-box">
             <div class="stat-label">Surveys completed</div>
-            <div class="stat-value mono" id="statSurveys">0 / 10</div>
+            <div class="stat-value mono" id="statSurveys">0 / 400</div>
             <div class="stat-hint" id="statSurveysHint">Unlock the Survey Program</div>
           </div>
           <div class="stat-box">
@@ -647,13 +691,13 @@
         <div class="dash-grid" style="grid-template-columns:1fr 1fr 1fr;">
           <div class="dash-panel">
             <h3 class="panel-title">Withdraw earnings</h3>
-            <p class="panel-sub">Minimum withdrawal is KSh 200. There's no fee to release your own money.</p>
+            <p class="panel-sub">Minimum withdrawal is KSh 400. There's no fee to release your own money.</p>
             <div class="till-box" style="margin-top:14px; flex-direction:column; align-items:flex-start; gap:6px;">
               <div class="label">Task wallet balance</div>
               <div class="num mono" id="withdrawBalance" style="font-size:1.3rem;">KSh 0</div>
             </div>
             <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="withdrawProgressFill" style="width:0%;"></div></div>
-            <p class="mpesa-hint" id="withdrawHint">Earn KSh 200 to unlock withdrawals.</p>
+            <p class="mpesa-hint" id="withdrawHint">Earn KSh 400 to unlock withdrawals.</p>
             <button class="btn btn-primary modal-submit" id="withdrawBtn" onclick="requestWithdrawal()" disabled>Request withdrawal</button>
             <div class="support-success" id="withdrawSuccess">
               <div class="pending-card" style="background:rgba(245,185,66,0.08); border-color:rgba(245,185,66,0.35);">
@@ -759,14 +803,14 @@
         <article class="program-card reveal">
           <div class="program-media">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=60" alt="Person filling out a survey on a tablet">
-            <span class="unlock-tag">Unlock KSh 200</span>
+            <span class="unlock-tag">Unlock KSh 300</span>
           </div>
           <div class="program-body">
             <h3>Survey Program</h3>
-            <p>10 surveys, 100 quick tasks each. Every 5 surveys you finish credits KSh 50 straight to your task wallet.</p>
+            <p>20 categories, 20 surveys each — 400 surveys in total. Every survey you submit credits KSh 5 straight to your task wallet.</p>
             <div class="program-foot">
-              <span class="per">Per 5 surveys completed</span>
-              <span class="pay mono">+ KSh 50</span>
+              <span class="per">Per survey completed</span>
+              <span class="pay mono">+ KSh 5</span>
             </div>
             <button class="btn btn-primary" style="width:100%; margin-top:6px;" onclick="openUnlock('survey')">Unlock Survey Program</button>
           </div>
@@ -791,8 +835,8 @@
 
       <!-- Advantage comparison -->
       <div class="compare-panel reveal">
-        <h3 class="panel-title" style="font-size:1.25rem;">Why earners upgrade to AI Training</h3>
-        <p class="panel-sub" style="margin-bottom:18px;">Same phone, same effort — the numbers just work out better on Premium.</p>
+        <h3 class="panel-title" style="font-size:1.25rem;">Survey vs. AI Training — compare the numbers</h3>
+        <p class="panel-sub" style="margin-bottom:18px;">Different pace, different payout per task. Here's exactly how they stack up.</p>
         <div class="compare-table">
           <div class="compare-row compare-head">
             <div></div>
@@ -801,27 +845,27 @@
           </div>
           <div class="compare-row">
             <div>Unlock fee</div>
-            <div>KSh 200</div>
+            <div>KSh 300</div>
             <div class="highlight">KSh 450</div>
           </div>
           <div class="compare-row">
             <div>Tasks available</div>
-            <div>10 surveys × 100 tasks</div>
+            <div>20 categories × 20 surveys (400 total)</div>
             <div class="highlight">100 tasks</div>
           </div>
           <div class="compare-row">
             <div>Pay structure</div>
-            <div>KSh 50 per 5 surveys finished</div>
+            <div>KSh 5 per survey, paid instantly</div>
             <div class="highlight">KSh 15 per task, paid instantly</div>
           </div>
           <div class="compare-row">
             <div>Time per task</div>
-            <div>A few minutes each</div>
+            <div>A minute or two each</div>
             <div class="highlight">~10 minutes, guided</div>
           </div>
           <div class="compare-row">
             <div>Max potential earnings</div>
-            <div>KSh 100 (all 10 surveys)</div>
+            <div>KSh 2,000 (all 400 surveys)</div>
             <div class="highlight">KSh 1,500 (all 100 tasks)</div>
           </div>
         </div>
@@ -867,10 +911,27 @@
     <div class="wrap">
       <div class="section-head reveal">
         <div class="section-eyebrow">Survey Program</div>
-        <h2>Your 10 surveys</h2>
-        <p class="sub">Each survey has 100 quick tasks. Finish a survey to mark it done — every 5 completed surveys adds KSh 50 to your wallet.</p>
+        <h2>20 categories, 20 surveys each</h2>
+        <p class="sub">400 surveys in total. Answer one and submit to mark it complete — every completed survey adds KSh 5 to your task wallet, up to KSh 2,000 if you finish them all.</p>
       </div>
-      <div class="survey-grid" id="surveyGrid"></div>
+
+      <div class="survey-overview">
+        <div class="stat-box">
+          <div class="stat-label">Surveys completed</div>
+          <div class="stat-value mono" id="surveyOverviewCount">0 / 400</div>
+          <div class="stat-hint">KSh 5 each</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Earned from surveys</div>
+          <div class="stat-value mono" id="surveyOverviewEarned">KSh 0</div>
+          <div class="stat-hint">Added straight to your wallet</div>
+        </div>
+        <div class="progress-bar" id="surveyOverviewBarWrap" style="grid-column:1 / -1; align-self:center;">
+          <div class="progress-fill" id="surveyOverviewBar" style="width:0%;"></div>
+        </div>
+      </div>
+
+      <div class="survey-categories" id="surveyCategories"></div>
     </div>
   </section>
 
@@ -928,7 +989,7 @@
         <div class="step reveal">
           <div class="num">04</div>
           <h3>Withdraw</h3>
-          <p>Once your wallet hits KSh 200, cash out to M-Pesa. No extra fee to release your own money.</p>
+          <p>Once your wallet hits KSh 400, cash out to M-Pesa. No extra fee to release your own money.</p>
         </div>
       </div>
     </div>
@@ -940,17 +1001,14 @@
       <div class="referral reveal">
         <div>
           <div class="section-eyebrow">Referrals & team</div>
-          <h2>Your circle pays you back.</h2>
+          <h2>Invite a friend, earn KSh 1.</h2>
+          <p class="sub" style="margin-bottom:6px;">Here's exactly how it works — no fine print:</p>
           <ul class="referral-list">
-            <li><span class="check">✓</span> Share your link. When someone you invited unlocks a program, a commission drops into your commission wallet.</li>
-            <li><span class="check">✓</span> Commission wallets stay separate from task wallets — earnings never mix.</li>
-            <li><span class="check">✓</span> Track a multi-level team and see who's active at each level.</li>
+            <li><span class="check">1</span> Copy your referral link from your dashboard and share it.</li>
+            <li><span class="check">2</span> Anyone who opens it is taken straight to account creation — under your referral automatically.</li>
+            <li><span class="check">3</span> The moment they finish creating their account, KSh 1 lands in your referral wallet.</li>
+            <li><span class="check">4</span> Your referral wallet is separate from your task wallet — it counts toward the same withdrawal balance, but you can always see the two broken out.</li>
           </ul>
-          <div class="level-pills">
-            <span class="level-pill active">Level 1 · Direct</span>
-            <span class="level-pill">Level 2</span>
-            <span class="level-pill">Level 3</span>
-          </div>
         </div>
         <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=60" alt="Friends celebrating together">
       </div>
@@ -973,7 +1031,7 @@
             <span class="faq-chevron">⌄</span>
           </button>
           <div class="faq-a">
-            <p>Minimum balance 200 KSh. No withdrawal fee — we cover M-Pesa costs. Withdrawals processed within 24 hours.</p>
+            <p>Minimum balance 400 KSh. No withdrawal fee — we cover M-Pesa costs. Withdrawals processed within 24 hours.</p>
           </div>
         </div>
 
@@ -1062,7 +1120,7 @@
 
     <ul class="steps-mini">
       <li><span class="n">1</span> Go to M-Pesa → Lipa na M-Pesa → Buy Goods and Services.</li>
-      <li><span class="n">2</span> Enter till number <b>7968544</b> and the unlock amount (<span id="unlockAmount">KSh 200</span>).</li>
+      <li><span class="n">2</span> Enter till number <b>7968544</b> and the unlock amount (<span id="unlockAmount">KSh 300</span>).</li>
       <li><span class="n">3</span> Copy the confirmation code from the M-Pesa SMS and paste it below.</li>
     </ul>
 
@@ -1185,6 +1243,13 @@
   // Year
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  // ---- Referral link capture ----
+  // If someone arrives via a referral link (?ref=CODE), skip straight to
+  // account creation instead of the marketing homepage, and remember the
+  // code so the referrer gets credited once signup finishes.
+  const REFERRAL_BONUS = 1; // KSh credited to the referrer per new signup
+  let capturedReferralCode = new URLSearchParams(window.location.search).get('ref');
+
   // Mobile menu
   const toggle = document.getElementById('menuToggle');
   const links = document.getElementById('navLinks');
@@ -1259,7 +1324,7 @@
     { text: "earned", amt: "KSh 15", tag: "AI training task paid" },
     { text: "unlocked", amt: "the Survey Program", tag: "New earner" },
     { text: "unlocked", amt: "AI Training", tag: "Went Premium" },
-    { text: "withdrew", amt: "KSh 200", tag: "Sent to M-Pesa" },
+    { text: "withdrew", amt: "KSh 400", tag: "Sent to M-Pesa" },
   ];
   function initials(name){ return name.slice(0,2).toUpperCase(); }
   function buildItem(){
@@ -1291,7 +1356,7 @@
   let currentUnlockProgram = null; // 'survey' or 'ai'
 
   const PROGRAM_INFO = {
-    survey: { name: 'Survey Program', amount: 'KSh 200' },
+    survey: { name: 'Survey Program', amount: 'KSh 300' },
     ai: { name: 'AI Training (Premium)', amount: 'KSh 450' }
   };
 
@@ -1403,7 +1468,7 @@
     return 'KSh ' + Number(n || 0).toLocaleString('en-KE');
   }
 
-  const WITHDRAWAL_THRESHOLD = 200;
+  const WITHDRAWAL_THRESHOLD = 400;
 
   function getCurrentUser(){
     const email = getSession();
@@ -1453,8 +1518,8 @@
       document.getElementById('referralCode').textContent =
         window.location.origin + window.location.pathname + '?ref=' + user.referralCode;
 
-      document.getElementById('statSurveys').textContent = (user.surveysCompleted || 0) + ' / 10';
-      document.getElementById('statSurveysHint').textContent = user.surveyUnlocked ? 'Every 5 finished adds KSh 50' : 'Unlock the Survey Program';
+      document.getElementById('statSurveys').textContent = Object.keys(user.completedSurveys || {}).length + ' / 400';
+      document.getElementById('statSurveysHint').textContent = user.surveyUnlocked ? 'KSh 5 per survey' : 'Unlock the Survey Program';
       document.getElementById('statAiTasks').textContent = (user.aiTasksCompleted || 0) + ' / 100';
       document.getElementById('statAiHint').textContent = user.aiUnlocked ? 'KSh 15 per task' : 'Unlock AI Training';
 
@@ -1532,52 +1597,165 @@
     renderAuthState();
   }
 
+  // ---- Survey catalog: 20 categories x 20 surveys x 10 options each ----
+  const OPTION_SETS = [
+    ['Strongly disagree', 'Disagree', 'Slightly disagree', 'Neutral', 'Slightly agree', 'Agree', 'Strongly agree', 'Not applicable', 'Prefer not to say', 'Other'],
+    ['Very poor', 'Poor', 'Below average', 'Average', 'Above average', 'Good', 'Excellent', 'Not sure', 'No opinion', 'Other'],
+    ['Never', 'Rarely', 'Sometimes', 'Often', 'Very often', 'Always', 'Prefer not to say', 'Not applicable', 'Depends', 'Other'],
+    ['1 - Very low', '2', '3 - Moderate', '4', '5 - High', '6', '7 - Very high', 'Not sure', 'Not relevant', 'Other'],
+    ['Very unsatisfied', 'Unsatisfied', 'Slightly unsatisfied', 'Neutral', 'Slightly satisfied', 'Satisfied', 'Very satisfied', 'N/A', 'No opinion', 'Other'],
+    ['Strongly oppose', 'Oppose', 'Slightly oppose', 'Neutral', 'Slightly support', 'Support', 'Strongly support', 'Not sure', 'No opinion', 'Other'],
+    ['Extremely unlikely', 'Unlikely', 'Slightly unlikely', 'Neutral', 'Slightly likely', 'Likely', 'Extremely likely', 'Not sure', 'N/A', 'Other'],
+    ['Terrible', 'Poor', 'Below average', 'Average', 'Above average', 'Great', 'Excellent', 'Not sure', 'N/A', 'Other'],
+    ['Very insecure', 'Insecure', 'Slightly insecure', 'Neutral', 'Slightly secure', 'Secure', 'Very secure', 'Not sure', 'N/A', 'Other'],
+    ['Worse than ever', 'Worse', 'Slightly worse', 'Same', 'Slightly better', 'Better', 'Much better', 'Not sure', 'N/A', 'Other']
+  ];
+  const CATEGORY_DEFS = [
+    { id: 'business',    name: '💼 Business & Customer',    optionsIdx: 0 },
+    { id: 'civic',       name: '🏙️ Civic & Urban Planning', optionsIdx: 1 },
+    { id: 'lifestyle',   name: '🧘 Lifestyle & Personal',    optionsIdx: 2 },
+    { id: 'specific',    name: '🎯 School, Farm, Remote',    optionsIdx: 3 },
+    { id: 'health',      name: '❤️ Health & Wellness',       optionsIdx: 4 },
+    { id: 'tech',        name: '📱 Technology & Digital',    optionsIdx: 5 },
+    { id: 'finance',     name: '💰 Finance & Spending',      optionsIdx: 6 },
+    { id: 'education',   name: '📚 Education & Learning',    optionsIdx: 7 },
+    { id: 'environment', name: '🌿 Environment & Nature',    optionsIdx: 8 },
+    { id: 'social',      name: '🤝 Social & Community',      optionsIdx: 9 },
+    { id: 'travel',      name: '✈️ Travel & Tourism',        optionsIdx: 0 },
+    { id: 'food',        name: '🍔 Food & Dining',           optionsIdx: 1 },
+    { id: 'entertain',   name: '🎬 Entertainment & Media',   optionsIdx: 2 },
+    { id: 'sports',      name: '⚽ Sports & Fitness',         optionsIdx: 3 },
+    { id: 'housing',     name: '🏠 Housing & Living',        optionsIdx: 4 },
+    { id: 'workplace',   name: '🏢 Workplace & Career',      optionsIdx: 5 },
+    { id: 'family',      name: '👪 Family & Parenting',      optionsIdx: 6 },
+    { id: 'shopping',    name: '🛍️ Shopping & Retail',       optionsIdx: 7 },
+    { id: 'arts',        name: '🎨 Arts & Culture',          optionsIdx: 8 },
+    { id: 'government',  name: '🏛️ Government & Policy',     optionsIdx: 9 }
+  ];
+  function generateTitles(prefix, count){
+    const pool = [
+      'Overall satisfaction', 'Quality of service', 'Ease of use', 'Value for money',
+      'Reliability', 'Accessibility', 'Communication', 'Response time',
+      'User experience', 'Trust level', 'Recommendation intent', 'Loyalty',
+      'Price perception', 'Feature set', 'Onboarding experience', 'Support quality',
+      'Problem resolution', 'Innovation', 'Sustainability', 'Community impact',
+      'Safety', 'Cleanliness', 'Convenience', 'Affordability',
+      'Variety', 'Speed', 'Flexibility', 'Transparency',
+      'Fairness', 'Respect', 'Inclusivity', 'Privacy',
+      'Security', 'Performance', 'Design', 'Functionality',
+      'Comfort', 'Atmosphere', 'Location', 'Timeliness'
+    ];
+    const titles = [];
+    for (let i = 0; i < count; i++) titles.push(`${prefix} ${pool[i % pool.length]} ${i + 1}`);
+    return titles;
+  }
+  const SURVEY_PAY = 5; // KSh per completed survey
+  const SURVEY_CATALOG = CATEGORY_DEFS.map(def => {
+    const optionSet = OPTION_SETS[def.optionsIdx % OPTION_SETS.length];
+    const titlePrefix = def.name.replace(/[^a-zA-Z ]/g, '').trim().slice(0, 12);
+    const titles = generateTitles(titlePrefix, 20);
+    return {
+      id: def.id,
+      name: def.name,
+      surveys: titles.map((title, idx) => ({ id: `${def.id}-${idx + 1}`, title, options: optionSet.slice(0, 10) }))
+    };
+  });
+  const TOTAL_SURVEYS = SURVEY_CATALOG.reduce((sum, c) => sum + c.surveys.length, 0); // 400
+
   // ---- Survey Program ----
+  let surveyCatalogBuilt = false;
   function renderSurveySection(user){
     const section = document.getElementById('surveyTasks');
     if (!user.surveyUnlocked) { section.style.display = 'none'; return; }
     section.style.display = 'block';
-    const grid = document.getElementById('surveyGrid');
-    grid.innerHTML = '';
-    (user.surveyProgress || []).forEach((progress, i) => {
-      const done = progress >= 100;
-      const card = document.createElement('div');
-      card.className = 'survey-card' + (done ? ' completed' : '');
-      card.innerHTML = `
-        <h4>Survey ${i + 1}</h4>
-        <div class="sc-meta">${progress} / 100 tasks ${done ? '<span class="done-tag">· Completed ✓</span>' : ''}</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;"></div></div>
-        <button ${done ? 'disabled' : ''} onclick="completeSurveyBatch(${i})">${done ? 'Completed' : 'Complete 10 tasks'}</button>
-      `;
-      grid.appendChild(card);
+
+    const completedMap = user.completedSurveys || {};
+    const completedCount = Object.keys(completedMap).length;
+    document.getElementById('surveyOverviewCount').textContent = completedCount + ' / ' + TOTAL_SURVEYS;
+    document.getElementById('surveyOverviewEarned').textContent = formatKsh(completedCount * SURVEY_PAY);
+    document.getElementById('surveyOverviewBar').style.width = Math.round((completedCount / TOTAL_SURVEYS) * 100) + '%';
+
+    const container = document.getElementById('surveyCategories');
+    if (!surveyCatalogBuilt) {
+      container.innerHTML = '';
+      SURVEY_CATALOG.forEach(cat => {
+        const catEl = document.createElement('div');
+        catEl.className = 'survey-cat';
+        catEl.id = 'cat-' + cat.id;
+        const surveysHtml = cat.surveys.map((survey, idx) => {
+          const optionsHtml = survey.options.map((opt, oi) => `
+            <label class="survey-opt">
+              <input type="radio" name="opt-${survey.id}" value="${oi}">
+              <span>${opt}</span>
+            </label>`).join('');
+          return `
+            <div class="survey-item" id="item-${survey.id}" data-survey="${survey.id}">
+              <div class="survey-item-top">
+                <h5><span class="si-num">#${idx + 1}</span>${survey.title}</h5>
+                <span class="si-status" id="status-${survey.id}"></span>
+              </div>
+              <div class="survey-options">${optionsHtml}</div>
+              <button class="survey-submit" id="submit-${survey.id}" onclick="submitSurvey('${survey.id}')">Submit answer (+KSh ${SURVEY_PAY})</button>
+            </div>`;
+        }).join('');
+        catEl.innerHTML = `
+          <button type="button" class="survey-cat-head" onclick="this.parentElement.classList.toggle('open')">
+            <div>
+              <div class="sc-title">${cat.name}</div>
+              <div class="sc-progress" id="catprog-${cat.id}">0 / ${cat.surveys.length} completed</div>
+            </div>
+            <div class="survey-cat-right">
+              <span class="survey-cat-badge" id="catbadge-${cat.id}">0/${cat.surveys.length}</span>
+              <span class="survey-cat-chevron">⌄</span>
+            </div>
+          </button>
+          <div class="survey-cat-body"><div class="survey-cat-inner">${surveysHtml}</div></div>
+        `;
+        container.appendChild(catEl);
+      });
+      surveyCatalogBuilt = true;
+    }
+
+    // Reflect completed state without rebuilding the whole DOM each time
+    SURVEY_CATALOG.forEach(cat => {
+      let catDone = 0;
+      cat.surveys.forEach(survey => {
+        const done = !!completedMap[survey.id];
+        if (done) catDone++;
+        const itemEl = document.getElementById('item-' + survey.id);
+        const statusEl = document.getElementById('status-' + survey.id);
+        const btnEl = document.getElementById('submit-' + survey.id);
+        if (!itemEl) return;
+        itemEl.classList.toggle('done', done);
+        if (statusEl) statusEl.textContent = done ? '✓ Completed' : '';
+        if (btnEl) {
+          btnEl.disabled = done;
+          btnEl.textContent = done ? 'Completed' : `Submit answer (+KSh ${SURVEY_PAY})`;
+        }
+      });
+      const badge = document.getElementById('catbadge-' + cat.id);
+      const prog = document.getElementById('catprog-' + cat.id);
+      if (badge) badge.textContent = catDone + '/' + cat.surveys.length;
+      if (prog) prog.textContent = catDone + ' / ' + cat.surveys.length + ' completed';
     });
   }
 
-  function completeSurveyBatch(index){
+  function submitSurvey(surveyId){
     const user = getCurrentUser();
     if (!user || !user.surveyUnlocked) return;
-    let awardedBonus = 0;
+    if (user.completedSurveys && user.completedSurveys[surveyId]) return;
+    const chosen = document.querySelector(`input[name="opt-${surveyId}"]:checked`);
+    if (!chosen) {
+      alert('Please choose an option before submitting.');
+      return;
+    }
     updateCurrentUser(u => {
-      const progress = u.surveyProgress || [0,0,0,0,0,0,0,0,0,0];
-      const wasDone = progress[index] >= 100;
-      if (wasDone) return;
-      progress[index] = Math.min(100, progress[index] + 10);
-      u.surveyProgress = progress;
-      if (progress[index] >= 100) {
-        u.surveysCompleted = (u.surveysCompleted || 0) + 1;
-        const tiersEarned = Math.floor(u.surveysCompleted / 5);
-        if (tiersEarned > (u.surveyBonusTiersAwarded || 0)) {
-          const newTiers = tiersEarned - (u.surveyBonusTiersAwarded || 0);
-          awardedBonus = newTiers * 50;
-          u.balance = (u.balance || 0) + awardedBonus;
-          u.surveyBonusTiersAwarded = tiersEarned;
-        }
-      }
+      u.completedSurveys = u.completedSurveys || {};
+      if (u.completedSurveys[surveyId]) return;
+      u.completedSurveys[surveyId] = true;
+      u.balance = (u.balance || 0) + SURVEY_PAY;
     });
     renderAuthState();
-    if (awardedBonus > 0) {
-      alert(`🎉 Bonus unlocked! KSh ${awardedBonus} added to your task wallet for finishing 5 surveys.`);
-    }
   }
 
   // ---- AI Training (Premium) ----
@@ -1825,21 +2003,41 @@
       referralBalance: 0,
       referralCode: generateReferralCode(pendingUser.name),
       referrals: [],
+      referredBy: capturedReferralCode || null,
       surveyUnlocked: false,
-      surveyProgress: [0,0,0,0,0,0,0,0,0,0], // 10 surveys, 0-100 each
-      surveysCompleted: 0,
-      surveyBonusTiersAwarded: 0,
+      completedSurveys: {}, // { surveyId: true } — 400 surveys total, KSh 5 each
       aiUnlocked: false,
       aiTasksCompleted: 0,
       withdrawal: null // { amount, mpesa, status: 'pending', date }
     };
+
+    // Credit KSh 1 to whoever's referral link brought this signup in.
+    if (capturedReferralCode) {
+      const referrerIdx = users.findIndex(u => u.referralCode === capturedReferralCode);
+      if (referrerIdx !== -1) {
+        users[referrerIdx].referralBalance = (users[referrerIdx].referralBalance || 0) + REFERRAL_BONUS;
+        users[referrerIdx].referrals = users[referrerIdx].referrals || [];
+        users[referrerIdx].referrals.push({
+          name: newUser.name,
+          date: new Date().toLocaleDateString('en-KE')
+        });
+      }
+    }
+
     users.push(newUser);
     saveUsers(users);
+    capturedReferralCode = null; // one-time use per page load
     finishAuthSuccess(newUser, true);
   }
 
   // Render whatever session already exists on page load
   renderAuthState();
+
+  // If this visit came from a referral link and nobody's logged in yet,
+  // skip the homepage and go straight to account creation.
+  if (capturedReferralCode && !getSession()) {
+    openAuth('signup');
+  }
 </script>
 
 </body>
