@@ -1,410 +1,1665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PesaLoop — Surveys & AI Training</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; }
-    body {
-      background: #0a1f1a; color: #edefea; font-family: 'Inter', sans-serif;
-      padding: 0 20px; line-height: 1.5;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PesaLoop — Turn Small Tasks Into Daily Pay</title>
+<meta name="description" content="Unlock earning programs, complete quick daily tasks, and cash out to M-Pesa. PesaLoop is your phone-powered side income.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --ink:#08201b;
+    --ink-2:#0e2b24;
+    --surface:#12362d;
+    --surface-2:#173f34;
+    --line: rgba(237,239,234,0.12);
+    --cream:#EDEFEA;
+    --muted:#8FA69C;
+    --green:#00C389;
+    --green-deep:#049167;
+    --gold:#F5B942;
+    --radius: 18px;
+    --maxw: 1160px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; letter-spacing:-0.01em; }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  ::selection{ background:var(--green); color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:100;
+    background:rgba(8,32,27,0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; max-width:var(--maxw); margin:0 auto;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.15rem; }
+  .logo-mark{
+    width:30px; height:30px; border-radius:8px;
+    background:linear-gradient(135deg, var(--green), var(--green-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; color:var(--ink); font-size:0.95rem;
+  }
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a.navlink{ font-size:0.92rem; color:var(--muted); font-weight:500; transition:color .2s; }
+  .nav-links a.navlink:hover{ color:var(--cream); }
+  .nav-cta{ display:flex; gap:10px; align-items:center; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:10px 20px; border-radius:999px; font-weight:600; font-size:0.9rem;
+    cursor:pointer; border:1px solid transparent; transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    white-space:nowrap;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-ghost{ color:var(--cream); border-color:var(--line); background:transparent; }
+  .btn-ghost:hover{ border-color:var(--green); }
+  .btn-primary{ background:var(--green); color:var(--ink); box-shadow:0 6px 20px rgba(0,195,137,0.28); }
+  .btn-primary:hover{ box-shadow:0 8px 26px rgba(0,195,137,0.4); transform:translateY(-1px); }
+  .menu-toggle{ display:none; background:none; border:none; color:var(--cream); font-size:1.4rem; cursor:pointer; }
+
+  @media (max-width: 860px){
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0; background:var(--ink-2);
+      flex-direction:column; align-items:flex-start; padding:20px 24px; gap:16px;
+      border-bottom:1px solid var(--line);
+      display:none;
     }
-    :root {
-      --green: #00c389; --gold: #f5b942; --surface: #12362d;
-      --line: rgba(237,239,234,0.12); --muted: #8fa69c;
-    }
-    .wrap { max-width: 1200px; margin: 0 auto; }
-    .flex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-    .btn {
-      padding: 10px 22px; border-radius: 40px; border: none; font-weight: 600;
-      background: var(--green); color: #08201b; cursor: pointer; transition: 0.2s;
-    }
-    .btn-outline { background: transparent; border: 1px solid var(--line); color: #edefea; }
-    .btn-gold { background: var(--gold); color: #0a1f1a; }
-    .card {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 24px;
-      padding: 24px; backdrop-filter: blur(2px);
-    }
-    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    @media (max-width: 720px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
-    .badge { background: rgba(0,195,137,0.15); color: var(--green); padding: 4px 12px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .mt-2 { margin-top: 16px; }
-    .mb-1 { margin-bottom: 8px; }
-    .text-muted { color: var(--muted); }
-    .stat { background: #0e2b24; border-radius: 16px; padding: 18px; border: 1px solid var(--line); }
-    .stat .num { font-size: 1.8rem; font-weight: 700; }
-    .trust-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
-    .trust-pill { background: #0e2b24; padding: 6px 16px; border-radius: 40px; border: 1px solid var(--line); font-size: 0.85rem; }
-    .modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-      display: none; align-items: center; justify-content: center; z-index: 999;
-    }
-    .modal.open { display: flex; }
-    .modal-card {
-      background: #12362d; border: 1px solid var(--line); border-radius: 28px;
-      padding: 32px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto;
-    }
-    .modal-card .close { float: right; background: none; border: none; color: var(--muted); font-size: 1.6rem; cursor: pointer; }
-    input, textarea {
-      background: #0a1f1a; border: 1px solid var(--line); border-radius: 14px;
-      padding: 14px; color: #edefea; width: 100%; font-family: inherit;
-    }
-    input:focus, textarea:focus { outline: 2px solid var(--green); }
-    .task-item { background: #0e2b24; border-radius: 16px; padding: 14px 18px; border: 1px solid var(--line); margin-bottom: 8px; }
-    .progress-bar { height: 6px; background: #1f4a3e; border-radius: 8px; margin: 6px 0; }
-    .progress-fill { height: 100%; background: var(--green); border-radius: 8px; width: 0%; }
-    .till-box { background: #0a1f1a; border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); }
-    .faq-item { border-bottom: 1px solid var(--line); padding: 12px 0; }
-    .faq-item summary { font-weight: 600; cursor: pointer; color: var(--gold); }
-    .faq-item p { color: var(--muted); padding-top: 6px; }
-    .ticker { background: #0e2b24; border-radius: 40px; padding: 8px 18px; display: inline-flex; align-items: center; gap: 12px; }
-    .ticker .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-    .compare-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-    .compare-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); }
-    .compare-table tr:last-child td { border-bottom: none; }
-  </style>
+    .nav-links.open{ display:flex; }
+    .menu-toggle{ display:block; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{ position:relative; padding:72px 0 40px; overflow:hidden; }
+  .hero::before{
+    content:''; position:absolute; top:-140px; right:-160px; width:520px; height:520px;
+    background:radial-gradient(circle, rgba(0,195,137,0.28), transparent 70%);
+    filter:blur(10px); pointer-events:none;
+  }
+  .hero::after{
+    content:''; position:absolute; bottom:-200px; left:-160px; width:420px; height:420px;
+    background:radial-gradient(circle, rgba(245,185,66,0.14), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center; position:relative; z-index:1; }
+  @media (max-width: 940px){ .hero-grid{ grid-template-columns:1fr; gap:44px; } }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 14px; border-radius:999px; border:1px solid var(--line);
+    font-size:0.8rem; color:var(--green); font-weight:600; background:rgba(0,195,137,0.06);
+    margin-bottom:22px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(0,195,137,0.2); }
+
+  .hero h1{ font-size:clamp(2.2rem, 4.6vw, 3.4rem); line-height:1.08; font-weight:700; }
+  .hero h1 .accent{ color:var(--green); }
+  .hero p.lead{
+    margin-top:20px; font-size:1.08rem; line-height:1.65; color:var(--muted); max-width:520px;
+  }
+  .hero-actions{ display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
+  .btn-lg{ padding:14px 26px; font-size:0.98rem; }
+
+  .hero-stats{ display:flex; gap:28px; margin-top:40px; flex-wrap:wrap; }
+  .hero-stat{ }
+  .hero-stat .num{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.3rem; color:var(--cream); }
+  .hero-stat .label{ font-size:0.78rem; color:var(--muted); margin-top:2px; }
+
+  /* Phone mock + ticker (signature element) */
+  .phone-stage{ position:relative; display:flex; justify-content:center; }
+  .phone{
+    width:290px; border-radius:34px; background:var(--surface);
+    border:1px solid var(--line); padding:14px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+    position:relative;
+  }
+  .phone-notch{ width:70px; height:6px; border-radius:4px; background:rgba(237,239,234,0.15); margin:0 auto 12px; }
+  .phone-screen{
+    background:linear-gradient(180deg, var(--ink-2), var(--ink));
+    border-radius:22px; padding:18px; height:430px; overflow:hidden; position:relative;
+  }
+  .balance-card{
+    background:linear-gradient(135deg, var(--green-deep), var(--green));
+    border-radius:16px; padding:16px 18px; color:var(--ink); margin-bottom:16px;
+  }
+  .balance-card .label{ font-size:0.72rem; font-weight:600; opacity:0.75; text-transform:uppercase; letter-spacing:0.05em; }
+  .balance-card .amt{ font-family:'JetBrains Mono',monospace; font-size:1.7rem; font-weight:700; margin-top:4px; }
+  .ticker-title{ font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; font-weight:600; }
+  .ticker-viewport{ height:280px; overflow:hidden; position:relative; }
+  .ticker-viewport::after{
+    content:''; position:absolute; bottom:0; left:0; right:0; height:50px;
+    background:linear-gradient(180deg, transparent, var(--ink));
+  }
+  .ticker-track{ display:flex; flex-direction:column; gap:10px; animation:tickerScroll 14s linear infinite; }
+  @keyframes tickerScroll{ 0%{ transform:translateY(0);} 100%{ transform:translateY(-50%);} }
+  .ticker-item{
+    display:flex; align-items:center; gap:10px; background:var(--surface-2);
+    border:1px solid var(--line); border-radius:12px; padding:10px 12px;
+  }
+  .ticker-item .avatar{
+    width:32px; height:32px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg, var(--gold), #d99a2b);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.75rem; color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .ticker-item .txt{ font-size:0.8rem; line-height:1.3; }
+  .ticker-item .txt b{ color:var(--green); font-family:'JetBrains Mono',monospace; }
+  .ticker-item .who{ color:var(--muted); }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section{ padding:88px 0; }
+  .section-head{ max-width:640px; margin-bottom:52px; }
+  .section-eyebrow{ font-size:0.8rem; font-weight:600; color:var(--gold); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; }
+  .section h2{ font-size:clamp(1.7rem, 3vw, 2.35rem); line-height:1.15; }
+  .section p.sub{ margin-top:14px; color:var(--muted); font-size:1.02rem; line-height:1.6; }
+
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- PROGRAM CARDS ---------- */
+  .programs-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+  @media (max-width: 900px){ .programs-grid{ grid-template-columns:1fr; } }
+  .program-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden; transition:transform .25s ease, border-color .25s ease;
+    display:flex; flex-direction:column;
+  }
+  .program-card:hover{ transform:translateY(-6px); border-color:rgba(0,195,137,0.4); }
+  .program-media{ height:150px; position:relative; overflow:hidden; }
+  .program-media img{ width:100%; height:100%; object-fit:cover; }
+  .program-media .unlock-tag{
+    position:absolute; top:12px; right:12px; background:rgba(8,32,27,0.85);
+    border:1px solid var(--line); color:var(--gold); font-size:0.72rem; font-weight:600;
+    padding:5px 10px; border-radius:999px; font-family:'JetBrains Mono',monospace;
+  }
+  .program-body{ padding:22px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .program-body h3{ font-size:1.15rem; }
+  .program-body p{ color:var(--muted); font-size:0.92rem; line-height:1.55; margin:0; flex:1; }
+  .program-foot{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:14px; margin-top:6px; border-top:1px solid var(--line);
+  }
+  .program-foot .per{ font-size:0.75rem; color:var(--muted); }
+  .program-foot .pay{ font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--green); font-size:1.02rem; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{ display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; counter-reset:step; }
+  @media (max-width: 900px){ .steps{ grid-template-columns:1fr 1fr; } }
+  @media (max-width: 560px){ .steps{ grid-template-columns:1fr; } }
+  .step{
+    border:1px solid var(--line); border-radius:var(--radius); padding:24px 20px;
+    background:linear-gradient(180deg, var(--surface), transparent);
+    position:relative;
+  }
+  .step .num{
+    font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--gold);
+    border:1px solid var(--line); width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .step h3{ font-size:1.02rem; margin-bottom:8px; }
+  .step p{ font-size:0.88rem; color:var(--muted); line-height:1.55; margin:0; }
+
+  /* ---------- REFERRAL ---------- */
+  .referral{
+    display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;
+    background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:48px;
+  }
+  @media (max-width: 900px){ .referral{ grid-template-columns:1fr; padding:32px 24px; } }
+  .referral img{ border-radius:16px; }
+  .referral-list{ list-style:none; padding:0; margin:22px 0 0; display:flex; flex-direction:column; gap:14px; }
+  .referral-list li{ display:flex; align-items:flex-start; gap:12px; font-size:0.95rem; color:var(--cream); line-height:1.5; }
+  .referral-list .check{
+    flex:none; width:22px; height:22px; border-radius:50%; background:rgba(0,195,137,0.14);
+    color:var(--green); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; margin-top:2px;
+  }
+  .level-pills{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+  .level-pill{
+    font-size:0.78rem; font-family:'JetBrains Mono',monospace; padding:7px 13px; border-radius:999px;
+    border:1px solid var(--line); color:var(--muted);
+  }
+  .level-pill.active{ color:var(--green); border-color:var(--green); }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    text-align:center; padding:90px 24px; position:relative;
+    background: radial-gradient(ellipse at top, rgba(0,195,137,0.12), transparent 60%);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .cta h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); max-width:560px; margin:0 auto; }
+  .cta p{ color:var(--muted); margin-top:16px; }
+  .cta .btn{ margin-top:28px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:44px 24px 34px; }
+  .footer-inner{
+    max-width:var(--maxw); margin:0 auto; display:flex; justify-content:space-between;
+    align-items:center; flex-wrap:wrap; gap:16px; border-top:1px solid var(--line); padding-top:28px;
+  }
+  .footer-links{ display:flex; gap:22px; flex-wrap:wrap; }
+  .footer-links a{ font-size:0.85rem; color:var(--muted); }
+  .footer-links a:hover{ color:var(--cream); }
+  .copyright{ font-size:0.8rem; color:var(--muted); }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--green); outline-offset:3px; }
+
+  /* ---------- UNLOCK MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(4,16,13,0.7);
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    width:100%; max-width:440px; background:var(--surface); border:1px solid var(--line);
+    border-radius:22px; padding:28px; position:relative; max-height:90vh; overflow-y:auto;
+    animation: modalIn .25s ease;
+  }
+  @keyframes modalIn{ from{ opacity:0; transform:translateY(12px) scale(0.98);} to{ opacity:1; transform:translateY(0) scale(1);} }
+  .modal-close{
+    position:absolute; top:16px; right:16px; background:var(--surface-2); border:1px solid var(--line);
+    color:var(--muted); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:hover{ color:var(--cream); }
+  .modal-eyebrow{ font-size:0.78rem; color:var(--gold); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+  .modal h3.modal-title{ font-size:1.35rem; margin-top:6px; }
+  .modal p.modal-desc{ color:var(--muted); font-size:0.9rem; margin-top:8px; line-height:1.55; }
+
+  .brand-badges{ display:flex; gap:10px; margin:18px 0 6px; }
+  .brand-badge{
+    display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:10px;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:0.8rem; border:1px solid var(--line);
+  }
+  .brand-badge .chip{ width:16px; height:16px; border-radius:4px; flex:none; }
+  .badge-safaricom{ background:rgba(0,168,89,0.1); color:#20B759; }
+  .badge-safaricom .chip{ background:#20B759; }
+  .badge-mpesa{ background:rgba(50,168,82,0.1); color:#3AC155; }
+  .badge-mpesa .chip{ background:linear-gradient(135deg,#3AC155,#1D8A3B); }
+
+  .till-box{
+    margin-top:16px; background:var(--ink-2); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .till-box .label{ font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
+  .till-box .num{ font-family:'JetBrains Mono',monospace; font-size:1.5rem; font-weight:700; color:var(--cream); letter-spacing:0.03em; }
+  .copy-btn{
+    flex:none; background:var(--green); color:var(--ink); border:none; padding:9px 15px;
+    border-radius:10px; font-weight:600; font-size:0.82rem; cursor:pointer; transition:background .18s ease;
+  }
+  .copy-btn:hover{ background:#04d896; }
+  .copy-btn.copied{ background:var(--gold); }
+
+  .steps-mini{ margin:18px 0 4px; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .steps-mini li{ display:flex; gap:10px; font-size:0.85rem; color:var(--cream); line-height:1.5; }
+  .steps-mini .n{
+    flex:none; width:20px; height:20px; border-radius:50%; background:var(--surface-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-family:'JetBrains Mono',monospace; color:var(--gold);
+  }
+
+  .form-group{ margin-top:18px; }
+  .form-group label{ display:block; font-size:0.82rem; color:var(--muted); margin-bottom:8px; font-weight:500; }
+  .form-group input{
+    width:100%; background:var(--ink-2); border:1px solid var(--line); border-radius:12px;
+    padding:13px 14px; color:var(--cream); font-family:'JetBrains Mono',monospace; font-size:0.95rem;
+    letter-spacing:0.04em; transition:border-color .18s ease;
+  }
+  .form-group input::placeholder{ color:rgba(143,166,156,0.55); font-family:'Inter',sans-serif; letter-spacing:normal; }
+  .form-group input:focus{ outline:none; border-color:var(--green); }
+
+  .modal-submit{ width:100%; margin-top:18px; padding:13px; font-size:0.95rem; border-radius:12px; }
+
+  .pending-state{ display:none; margin-top:18px; }
+  .pending-state.show{ display:block; }
+  .pending-card{
+    background:rgba(245,185,66,0.08); border:1px solid rgba(245,185,66,0.35); border-radius:14px;
+    padding:16px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .pending-icon{
+    flex:none; width:32px; height:32px; border-radius:50%; background:rgba(245,185,66,0.18);
+    display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:0.95rem;
+    animation:spin 1.6s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .pending-card h4{ font-size:0.92rem; margin:0 0 4px; font-family:'Space Grotesk',sans-serif; }
+  .pending-card p{ font-size:0.82rem; color:var(--muted); margin:0; line-height:1.5; }
+  .pending-code{ font-family:'JetBrains Mono',monospace; color:var(--cream); }
+
+  @media (prefers-reduced-motion: reduce){
+    .pending-icon{ animation:none; }
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  .dash-card{
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px 30px;
+  }
+  .dash-avatar{
+    width:52px; height:52px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg, var(--green), var(--green-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.2rem; color:var(--ink);
+  }
+  #dashUser{ display:none; }
+  .auth-tabs{ display:flex; gap:8px; background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:4px; margin-top:18px; }
+  .auth-tab{
+    flex:1; text-align:center; padding:9px 0; border-radius:9px; font-size:0.85rem; font-weight:600;
+    color:var(--muted); cursor:pointer; transition:background .18s ease, color .18s ease; background:none; border:none;
+    font-family:'Inter',sans-serif;
+  }
+  .auth-tab.active{ background:var(--green); color:var(--ink); }
+  .auth-error{
+    display:none; margin-top:14px; background:rgba(233,90,90,0.1); border:1px solid rgba(233,90,90,0.35);
+    color:#f19a9a; font-size:0.82rem; padding:10px 12px; border-radius:10px;
+  }
+  .auth-error.show{ display:block; }
+  .auth-success{ display:none; margin-top:18px; text-align:center; }
+  .auth-success.show{ display:block; }
+
+  /* ---------- DASHBOARD DETAIL ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; margin-bottom:24px; }
+  @media (max-width: 900px){ .stat-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width: 520px){ .stat-grid{ grid-template-columns:1fr; } }
+  .stat-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  .stat-label{ font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; }
+  .stat-value{ font-size:1.5rem; font-weight:700; color:var(--cream); margin-top:8px; }
+  .stat-hint{ font-size:0.78rem; color:var(--muted); margin-top:6px; }
+
+  .dash-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  @media (max-width: 900px){ .dash-grid{ grid-template-columns:1fr; } }
+  .dash-panel{ background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:26px; }
+  .panel-title{ font-size:1.1rem; font-family:'Space Grotesk',sans-serif; }
+  .panel-sub{ font-size:0.85rem; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+  .referral-empty{ font-size:0.82rem; color:var(--muted); margin-top:16px; }
+  .referral-log, .support-log{ list-style:none; padding:0; margin:14px 0 0; display:flex; flex-direction:column; gap:8px; }
+  .referral-log li, .support-log li{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+    font-size:0.82rem; color:var(--cream); display:flex; justify-content:space-between; gap:10px;
+  }
+  .referral-log li span, .support-log li span{ color:var(--muted); font-size:0.76rem; }
+
+  .form-group textarea{
+    width:100%; background:var(--ink-2); border:1px solid var(--line); border-radius:12px;
+    padding:13px 14px; color:var(--cream); font-family:'Inter',sans-serif; font-size:0.9rem;
+    resize:vertical; min-height:90px; transition:border-color .18s ease;
+  }
+  .form-group textarea:focus{ outline:none; border-color:var(--green); }
+
+  .support-success{ display:none; margin-top:16px; }
+  .support-success.show{ display:block; }
+
+  /* ---------- MULTI-STEP AUTH ---------- */
+  .step-dots{ display:flex; gap:6px; margin-top:14px; }
+  .step-dots span{ width:22px; height:4px; border-radius:4px; background:var(--line); }
+  .step-dots span.active{ background:var(--green); }
+  .auth-step{ display:none; }
+  .auth-step.active{ display:block; }
+
+  .google-btn{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+    background:#fff; color:#1f1f1f; border:1px solid var(--line); border-radius:12px;
+    padding:12px; font-weight:600; font-size:0.9rem; cursor:pointer; font-family:'Inter',sans-serif;
+    transition:box-shadow .18s ease;
+  }
+  .google-btn:hover{ box-shadow:0 4px 14px rgba(0,0,0,0.25); }
+  .google-g{ width:18px; height:18px; flex:none; }
+
+  .auth-divider{ display:flex; align-items:center; gap:12px; margin:18px 0; color:var(--muted); font-size:0.78rem; }
+  .auth-divider::before, .auth-divider::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+  .mpesa-hint{ font-size:0.78rem; color:var(--muted); margin-top:8px; }
+  .back-link{ display:inline-block; margin-top:14px; font-size:0.85rem; color:var(--muted); cursor:pointer; }
+  .back-link:hover{ color:var(--cream); }
+
+  /* ---------- TRUST ---------- */
+  .trust-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; }
+  @media (max-width: 900px){ .trust-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width: 560px){ .trust-grid{ grid-template-columns:1fr; } }
+  .trust-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:24px;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .trust-card:hover{ transform:translateY(-4px); border-color:rgba(0,195,137,0.35); }
+  .trust-icon{ font-size:1.6rem; margin-bottom:12px; }
+  .trust-card h3{ font-size:1rem; margin-bottom:8px; }
+  .trust-card p{ font-size:0.85rem; color:var(--muted); line-height:1.55; margin:0; }
+
+  /* ---------- PROGRESS BARS ---------- */
+  .progress-bar{ width:100%; height:8px; border-radius:999px; background:var(--ink-2); overflow:hidden; border:1px solid var(--line); }
+  .progress-fill{ height:100%; background:linear-gradient(90deg, var(--green-deep), var(--green)); border-radius:999px; transition:width .4s ease; }
+
+  /* ---------- COMPARISON TABLE ---------- */
+  .compare-panel{
+    margin-top:40px; background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px 30px;
+  }
+  .compare-table{ display:flex; flex-direction:column; border-top:1px solid var(--line); margin-top:6px; }
+  .compare-row{
+    display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:14px; padding:14px 0;
+    border-bottom:1px solid var(--line); font-size:0.88rem; align-items:center;
+  }
+  .compare-row > div:first-child{ color:var(--muted); font-weight:500; }
+  .compare-row .highlight{ color:var(--green); font-weight:600; }
+  .compare-head{ font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); font-weight:600; border-bottom:1px solid var(--line); }
+  .compare-head .highlight{ color:var(--gold); }
+  @media (max-width: 640px){
+    .compare-row{ grid-template-columns:1fr; gap:4px; padding:16px 0; }
+    .compare-row > div:first-child{ font-weight:700; color:var(--cream); }
+  }
+
+  /* ---------- SURVEY GRID ---------- */
+  .survey-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:18px; }
+  .survey-card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  .survey-card h4{ font-size:0.98rem; margin:0 0 6px; font-family:'Space Grotesk',sans-serif; }
+  .survey-card .sc-meta{ font-size:0.78rem; color:var(--muted); margin-bottom:12px; }
+  .survey-card .progress-bar{ margin-bottom:10px; }
+  .survey-card button{
+    width:100%; margin-top:8px; padding:9px; border-radius:10px; font-size:0.82rem;
+    background:var(--green); color:var(--ink); border:none; font-weight:600; cursor:pointer;
+  }
+  .survey-card button:disabled{ background:var(--surface-2); color:var(--muted); cursor:default; }
+  .survey-card.completed{ border-color:rgba(0,195,137,0.4); }
+  .survey-card .done-tag{ font-size:0.72rem; color:var(--green); font-weight:600; }
+</style>
 </head>
 <body>
-<div class="wrap" style="padding: 20px 0;">
-  <header class="flex-between" style="padding: 12px 0; border-bottom: 1px solid var(--line);">
-    <div class="flex"><span style="background:var(--green); color:#08201b; font-weight:700; padding:4px 12px; border-radius:8px;">P</span><span style="font-weight:700; font-size:1.3rem;">PesaLoop</span></div>
-    <div class="flex">
-      <span class="ticker"><span class="dot"></span> <span class="mono" style="font-size:0.85rem;">KSh 2.4M+ paid out</span></span>
-      <span id="dashGreet" style="color:var(--muted);">👋 Guest</span>
-      <button class="btn btn-outline" id="loginBtn" onclick="openAuth()">Login</button>
-      <button class="btn" id="signupBtn" onclick="openAuth()">Get Started</button>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">
+      <span class="logo-mark">P</span>
+      PesaLoop
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a class="navlink" href="#programs">Programs</a>
+      <a class="navlink" href="#how">How it works</a>
+      <a class="navlink" href="#referral">Referrals</a>
+      <a class="navlink" href="#dashboard">Dashboard</a>
+    </nav>
+    <div class="nav-cta" id="navCta">
+      <a href="#" class="btn btn-ghost" id="navLoginBtn" onclick="openAuth('login'); return false;">Login</a>
+      <a href="#" class="btn btn-primary" id="navSignupBtn" onclick="openAuth('signup'); return false;">Get started</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
     </div>
-  </header>
+  </div>
+</header>
+
+<main id="top">
+  <!-- DASHBOARD -->
+  <section class="section" id="dashboard" style="padding-top:48px; padding-bottom:0;">
+    <div class="wrap">
+      <div class="dash-card" id="dashGuest">
+        <div>
+          <div class="section-eyebrow">Your dashboard</div>
+          <h2 style="font-size:1.5rem; margin-top:6px;">Create a free account to see it here.</h2>
+          <p class="sub" style="margin-top:8px;">Your name, wallets, and unlocked programs will show up on this dashboard once you sign up.</p>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="openAuth('signup')">Create free account</button>
+      </div>
+
+      <div id="dashUser" style="display:none;">
+        <div class="dash-card" style="margin-bottom:24px;">
+          <div class="dash-avatar" id="dashAvatar">P</div>
+          <div style="flex:1;">
+            <div class="section-eyebrow">Welcome back</div>
+            <h2 style="font-size:1.5rem; margin-top:4px;" id="dashName">There</h2>
+            <p class="sub" style="margin-top:6px;" id="dashEmail">—</p>
+          </div>
+          <button class="btn btn-ghost" onclick="logoutUser()">Log out</button>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-label">Task wallet</div>
+            <div class="stat-value mono" id="statBalance">KSh 0</div>
+            <div class="stat-hint">Grows as you complete tasks</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Referral wallet</div>
+            <div class="stat-value mono" id="statReferralBalance">KSh 0</div>
+            <div class="stat-hint">From people you've invited</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Referrals</div>
+            <div class="stat-value mono" id="statReferralCount">0</div>
+            <div class="stat-hint">Total people invited</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">M-Pesa on file</div>
+            <div class="stat-value mono" id="statMpesa">—</div>
+            <div class="stat-hint">Payouts go here</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Surveys completed</div>
+            <div class="stat-value mono" id="statSurveys">0 / 10</div>
+            <div class="stat-hint" id="statSurveysHint">Unlock the Survey Program</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">AI tasks completed</div>
+            <div class="stat-value mono" id="statAiTasks">0 / 100</div>
+            <div class="stat-hint" id="statAiHint">Unlock AI Training</div>
+          </div>
+        </div>
+
+        <div class="dash-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="dash-panel">
+            <h3 class="panel-title">Withdraw earnings</h3>
+            <p class="panel-sub">Minimum withdrawal is KSh 200. There's no fee to release your own money.</p>
+            <div class="till-box" style="margin-top:14px; flex-direction:column; align-items:flex-start; gap:6px;">
+              <div class="label">Task wallet balance</div>
+              <div class="num mono" id="withdrawBalance" style="font-size:1.3rem;">KSh 0</div>
+            </div>
+            <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="withdrawProgressFill" style="width:0%;"></div></div>
+            <p class="mpesa-hint" id="withdrawHint">Earn KSh 200 to unlock withdrawals.</p>
+            <button class="btn btn-primary modal-submit" id="withdrawBtn" onclick="requestWithdrawal()" disabled>Request withdrawal</button>
+            <div class="support-success" id="withdrawSuccess">
+              <div class="pending-card" style="background:rgba(245,185,66,0.08); border-color:rgba(245,185,66,0.35);">
+                <div class="pending-icon">⏳</div>
+                <div style="text-align:left;">
+                  <h4>Withdrawal requested</h4>
+                  <p id="withdrawStatusMsg">We're processing your payout to M-Pesa. This isn't instant — we'll notify you once it's sent.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-panel">
+            <h3 class="panel-title">Your referral link</h3>
+            <p class="panel-sub">Share this — when someone signs up and unlocks a program, your referral wallet gets credited.</p>
+            <div class="till-box" style="margin-top:14px;">
+              <div style="overflow:hidden;">
+                <div class="label">Referral code</div>
+                <div class="num mono" id="referralCode" style="font-size:1.05rem; word-break:break-all;">—</div>
+              </div>
+              <button class="copy-btn" id="copyRefBtn" onclick="copyReferralLink()">Copy link</button>
+            </div>
+            <div class="referral-empty" id="referralEmpty">No referrals yet — invite friends to see them here.</div>
+            <ul class="referral-log" id="referralLog"></ul>
+          </div>
+
+          <div class="dash-panel">
+            <h3 class="panel-title">Need help?</h3>
+            <p class="panel-sub">Submit a request and our team will follow up with you.</p>
+            <form id="supportForm" onsubmit="return handleSupportSubmit(event)">
+              <div class="form-group">
+                <label for="supportSubject">Subject</label>
+                <input type="text" id="supportSubject" placeholder="e.g. Withdrawal not received" required>
+              </div>
+              <div class="form-group">
+                <label for="supportMessage">Message</label>
+                <textarea id="supportMessage" placeholder="Describe your issue or question…" required rows="4"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary modal-submit">Submit request</button>
+            </form>
+            <div class="support-success" id="supportSuccess">
+              <div class="pending-card" style="background:rgba(0,195,137,0.08); border-color:rgba(0,195,137,0.35);">
+                <div class="pending-icon" style="animation:none; color:var(--green); background:rgba(0,195,137,0.18);">✓</div>
+                <div style="text-align:left;">
+                  <h4>Request submitted</h4>
+                  <p>Reference <span class="pending-code" id="supportRefId"></span> — we'll follow up with you shortly.</p>
+                </div>
+              </div>
+            </div>
+            <ul class="support-log" id="supportLog"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- HERO -->
-  <section style="padding: 40px 0 20px;">
-    <div class="grid-2" style="align-items:center;">
+  <section class="hero">
+    <div class="wrap hero-grid">
       <div>
-        <span class="badge">📱 Paid via M-Pesa</span>
-        <h1 style="font-size:2.6rem; font-weight:700; margin:12px 0;">Earn with <span style="color:var(--green);">Surveys</span> & <span style="color:var(--gold);">AI Training</span></h1>
-        <p style="color:var(--muted); max-width:480px;">Complete surveys, train AI models, and withdraw daily. Transparent fees, no surprises.</p>
-        <div class="flex" style="margin-top:20px;">
-          <button class="btn" onclick="openAuth()">Start Earning</button>
-          <span class="text-muted" style="font-size:0.9rem;">🔥 2,400+ active earners</span>
+        <span class="eyebrow"><span class="dot"></span> Paid out via M-Pesa</span>
+        <h1>Turn a spare hour into <span class="accent">daily pay.</span></h1>
+        <p class="lead">Unlock an earning program on PesaLoop, finish quick daily tasks, and withdraw straight to your M-Pesa line. No office, no shift — just your phone.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary btn-lg" onclick="openAuth('signup'); return false;">Start earning free</a>
+          <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
         </div>
-        <div class="trust-row" style="margin-top:24px;">
-          <span class="trust-pill">🤝 Handshake AI</span><span class="trust-pill">⚡ Outlier</span>
-          <span class="trust-pill">📊 Prolific</span><span class="trust-pill">🧠 Scale AI</span>
-          <span class="trust-pill">🔬 Appen</span><span class="trust-pill">📈 Lionbridge</span>
-          <span class="trust-pill">🤖 CloudFactory</span><span class="trust-pill">🌍 Sama</span>
-          <span class="trust-pill">📡 Clickworker</span><span class="trust-pill">🎯 TELUS</span>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num mono">KSh 2.4M+</div><div class="label">Paid out to date</div></div>
+          <div class="hero-stat"><div class="num mono">18,000+</div><div class="label">Active earners</div></div>
+          <div class="hero-stat"><div class="num mono">24 hrs</div><div class="label">Wallet reset cycle</div></div>
         </div>
       </div>
-      <div class="card" style="background:#0e2b24;">
-        <div class="flex-between"><span>💰 Your balance</span><span class="badge">M-Pesa</span></div>
-        <div class="num mono" id="heroBalance" style="font-size:2.4rem;">KSh 0</div>
-        <div class="flex" style="margin-top:8px;"><span class="text-muted">withdraw threshold:</span> <span class="mono" style="color:var(--gold);">KSh 200</span></div>
-        <div class="progress-bar" style="margin:12px 0;"><div class="progress-fill" id="progressToWithdraw" style="width:0%;"></div></div>
-        <button class="btn btn-gold" onclick="handleWithdraw()" style="width:100%;">Withdraw (min 200 KSh)</button>
-        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">No withdrawal fee — we cover processing costs.</div>
-      </div>
-    </div>
-  </section>
 
-  <!-- SURVEYS + AI TRAINING -->
-  <section style="padding: 30px 0;">
-    <div class="flex-between"><h2>📋 Available Tasks</h2><span class="text-muted">Complete 5 surveys → +50 KSh</span></div>
-    <div class="grid-3" style="margin-top:20px;">
-      <!-- Surveys -->
-      <div class="card">
-        <div class="flex-between"><span>📋 Surveys</span><span class="badge" id="surveyCountBadge">0/10 active</span></div>
-        <p class="text-muted" style="font-size:0.9rem;">10 surveys · 100 tasks each. Earn 50 KSh per 5 completed surveys.</p>
-        <div id="surveyList" style="max-height:300px; overflow-y:auto; margin:12px 0;"></div>
-        <button class="btn btn-outline" style="width:100%;" onclick="doSurveyTask()">➕ Do a survey task</button>
-        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">No subscription needed for surveys.</div>
-      </div>
-      <!-- AI Training -->
-      <div class="card" style="border-color: rgba(245,185,66,0.3);">
-        <div class="flex-between"><span>🧠 AI Training</span><span class="badge" style="background:rgba(245,185,66,0.2); color:var(--gold);">⭐ Premium</span></div>
-        <p class="text-muted" style="font-size:0.9rem;">100 tasks · 15 KSh / ~10 min task. Unlock with one payment: <span class="mono" style="color:var(--gold);">450 KSh</span></p>
-        <div id="aiTaskList" style="max-height:200px; overflow-y:auto; margin:12px 0;"></div>
-        <button class="btn" style="width:100%; background:var(--gold); color:#0a1f1a;" onclick="handleAISubscription()">🔓 Subscribe to AI (450 KSh)</button>
-        <div class="text-muted" style="font-size:0.75rem; margin-top:8px;">One-time fee · no recurring charges.</div>
-      </div>
-      <!-- Why go Premium -->
-      <div class="card" style="background:#0e2b24;">
-        <h3 style="font-size:1.1rem;">📊 Surveys vs AI Training</h3>
-        <table class="compare-table">
-          <tr><td><strong>Surveys</strong></td><td>50 KSh / 5 tasks</td><td>~5-10 min each</td></tr>
-          <tr><td><strong>AI Training</strong></td><td>15 KSh / task</td><td>~10 min each</td></tr>
-          <tr><td colspan="3" style="color:var(--gold); font-size:0.9rem;">AI pays 3× more per task, with consistent availability.</td></tr>
-        </table>
-        <div class="trust-row" style="margin-top:12px;">
-          <span class="trust-pill">🔒 No hidden fees</span>
-          <span class="trust-pill">📅 Daily tasks</span>
-          <span class="trust-pill">💸 Withdraw anytime</span>
+      <div class="phone-stage">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="balance-card">
+              <div class="label" id="phoneLabel">Total wallet</div>
+              <div class="amt mono" id="phoneAmt">KSh 4,850</div>
+            </div>
+            <div class="ticker-title">Live payouts</div>
+            <div class="ticker-viewport">
+              <div class="ticker-track" id="tickerTrack"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- DASHBOARD STATS -->
-  <section class="card" style="margin: 20px 0;">
-    <div class="flex-between"><h3>📊 Dashboard</h3><span id="userEmailDisplay" class="text-muted">guest</span></div>
-    <div class="grid-2" style="margin-top:12px;">
-      <div class="stat"><div class="text-muted">Survey balance</div><div class="num mono" id="surveyBalanceDisplay">KSh 0</div></div>
-      <div class="stat"><div class="text-muted">AI Training balance</div><div class="num mono" id="aiBalanceDisplay">KSh 0</div></div>
-      <div class="stat"><div class="text-muted">Total earned</div><div class="num mono" id="totalEarnedDisplay">KSh 0</div></div>
-      <div class="stat"><div class="text-muted">Withdrawals</div><div class="num mono" id="withdrawCountDisplay">0</div></div>
-    </div>
-    <div class="flex" style="margin-top:12px; gap:16px;">
-      <span class="text-muted">🔹 Subscription: <span id="subscriptionStatus">None</span></span>
-      <span class="text-muted">🔸 Withdrawal fee: <span class="mono" style="color:var(--green);">0 KSh</span></span>
+  <!-- PROGRAMS -->
+  <section class="section" id="programs">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Earning programs</div>
+        <h2>Unlock once. Earn every day.</h2>
+        <p class="sub">A single unlock fee opens a program for good — no repeat charges, ever. Whatever you earn is yours to withdraw once you hit the threshold.</p>
+      </div>
+
+      <div class="programs-grid" style="grid-template-columns:repeat(2, 1fr);">
+        <article class="program-card reveal">
+          <div class="program-media">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=60" alt="Person filling out a survey on a tablet">
+            <span class="unlock-tag">Unlock KSh 200</span>
+          </div>
+          <div class="program-body">
+            <h3>Survey Program</h3>
+            <p>10 surveys, 100 quick tasks each. Every 5 surveys you finish credits KSh 50 straight to your task wallet.</p>
+            <div class="program-foot">
+              <span class="per">Per 5 surveys completed</span>
+              <span class="pay mono">+ KSh 50</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:6px;" onclick="openUnlock('survey')">Unlock Survey Program</button>
+          </div>
+        </article>
+
+        <article class="program-card reveal" style="border-color:rgba(245,185,66,0.4);">
+          <div class="program-media">
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=60" alt="AI visual">
+            <span class="unlock-tag" style="color:var(--ink); background:var(--gold); border-color:var(--gold);">Premium · KSh 450</span>
+          </div>
+          <div class="program-body">
+            <h3>AI Training <span style="color:var(--gold); font-size:0.75rem; font-weight:700; vertical-align:middle;">PREMIUM</span></h3>
+            <p>100 guided AI training tasks. Each one takes about 10 minutes and pays KSh 15 — higher, steadier pay than surveys.</p>
+            <div class="program-foot">
+              <span class="per">Per task (~10 min)</span>
+              <span class="pay mono">+ KSh 15</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:6px; background:var(--gold);" onclick="openUnlock('ai')">Unlock AI Training</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Advantage comparison -->
+      <div class="compare-panel reveal">
+        <h3 class="panel-title" style="font-size:1.25rem;">Why earners upgrade to AI Training</h3>
+        <p class="panel-sub" style="margin-bottom:18px;">Same phone, same effort — the numbers just work out better on Premium.</p>
+        <div class="compare-table">
+          <div class="compare-row compare-head">
+            <div></div>
+            <div>Survey Program</div>
+            <div class="highlight">AI Training (Premium)</div>
+          </div>
+          <div class="compare-row">
+            <div>Unlock fee</div>
+            <div>KSh 200</div>
+            <div class="highlight">KSh 450</div>
+          </div>
+          <div class="compare-row">
+            <div>Tasks available</div>
+            <div>10 surveys × 100 tasks</div>
+            <div class="highlight">100 tasks</div>
+          </div>
+          <div class="compare-row">
+            <div>Pay structure</div>
+            <div>KSh 50 per 5 surveys finished</div>
+            <div class="highlight">KSh 15 per task, paid instantly</div>
+          </div>
+          <div class="compare-row">
+            <div>Time per task</div>
+            <div>A few minutes each</div>
+            <div class="highlight">~10 minutes, guided</div>
+          </div>
+          <div class="compare-row">
+            <div>Max potential earnings</div>
+            <div>KSh 100 (all 10 surveys)</div>
+            <div class="highlight">KSh 1,500 (all 100 tasks)</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- FAQ & TERMS -->
-  <section style="padding: 20px 0 40px;">
-    <div class="card">
-      <h3>📖 FAQ & Transparency</h3>
-      <div class="faq-item"><summary>How do I withdraw?</summary><p>Minimum balance 200 KSh. No withdrawal fee — we cover M-Pesa costs. Withdrawals processed within 24 hours.</p></div>
-      <div class="faq-item"><summary>What's the AI Training subscription?</summary><p>One-time 450 KSh payment unlocks 100 AI tasks. Each task pays 15 KSh (~10 min). No recurring fees.</p></div>
-      <div class="faq-item"><summary>Are my earnings safe?</summary><p>Yes. All balances are tracked on our secure ledger. We use M-Pesa for payouts — same system used by millions.</p></div>
-      <div class="faq-item"><summary>Who are your partners?</summary><p>We work with Handshake AI, Outlier, Prolific, Scale AI, Appen, Lionbridge, CloudFactory, Sama, Clickworker, and TELUS.</p></div>
-      <div class="text-muted" style="margin-top:12px; font-size:0.85rem;">Terms: By using PesaLoop you agree to our terms. All payments are final. We reserve the right to verify tasks.</div>
+  <!-- TRUST -->
+  <section class="section" id="trust" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Why earners trust PesaLoop</div>
+        <h2>No hidden fees. No surprise gates.</h2>
+        <p class="sub">These aren't badges borrowed from someone else's brand — they're the actual rules this platform runs on.</p>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-card reveal">
+          <div class="trust-icon">💳</div>
+          <h3>One fee, once</h3>
+          <p>Each program is unlocked with a single payment. We never re-charge you to keep tasks unlocked or to release money you've already earned.</p>
+        </div>
+        <div class="trust-card reveal">
+          <div class="trust-icon">🔒</div>
+          <h3>Verified M-Pesa payments</h3>
+          <p>Till payments are confirmed against Safaricom's own transaction records before anything unlocks — not just whatever code gets typed in.</p>
+        </div>
+        <div class="trust-card reveal">
+          <div class="trust-icon">📊</div>
+          <h3>Transparent pay rates</h3>
+          <p>Every rate on this site — KSh 50 per 5 surveys, KSh 15 per AI task — is the real, fixed rate. No shifting targets once you've unlocked a program.</p>
+        </div>
+        <div class="trust-card reveal">
+          <div class="trust-icon">🎧</div>
+          <h3>Real support, on record</h3>
+          <p>Every support request gets a reference number and a follow-up — nothing disappears into a form that goes nowhere.</p>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- SURVEY TASKS -->
+  <section class="section" id="surveyTasks" style="display:none; padding-top:0;">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Survey Program</div>
+        <h2>Your 10 surveys</h2>
+        <p class="sub">Each survey has 100 quick tasks. Finish a survey to mark it done — every 5 completed surveys adds KSh 50 to your wallet.</p>
+      </div>
+      <div class="survey-grid" id="surveyGrid"></div>
+    </div>
+  </section>
+
+  <!-- AI TASKS -->
+  <section class="section" id="aiTasks" style="display:none; padding-top:0;">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">AI Training · Premium</div>
+        <h2>Your AI training tasks</h2>
+        <p class="sub">100 tasks total. Each one runs about 10 minutes and pays KSh 15 the moment it's done.</p>
+      </div>
+      <div class="dash-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <div>
+            <div class="stat-label">Tasks completed</div>
+            <div class="stat-value mono" id="aiTasksCompletedLabel">0 / 100</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="stat-label">Earned from AI tasks</div>
+            <div class="stat-value mono" id="aiEarnedLabel">KSh 0</div>
+          </div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="aiProgressFill" style="width:0%;"></div></div>
+        <button class="btn btn-primary modal-submit" id="aiTaskBtn" onclick="startAiTask()" style="margin-top:18px;">Start next task (~10 min)</button>
+        <p class="mpesa-hint" id="aiTaskStatus">Demo note: this preview speeds the 10-minute task up to a few seconds so you can see the flow.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">How it works</div>
+        <h2>Four steps to your first payout.</h2>
+        <p class="sub">Every earner follows the same short path, in this order.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="num">01</div>
+          <h3>Create an account</h3>
+          <p>Sign up free with your phone number in under a minute.</p>
+        </div>
+        <div class="step reveal">
+          <div class="num">02</div>
+          <h3>Unlock a program</h3>
+          <p>Pay once with M-Pesa. Access opens the moment payment confirms.</p>
+        </div>
+        <div class="step reveal">
+          <div class="num">03</div>
+          <h3>Do daily tasks</h3>
+          <p>Reviews and sessions pay into your wallets. Limits reset every day.</p>
+        </div>
+        <div class="step reveal">
+          <div class="num">04</div>
+          <h3>Withdraw</h3>
+          <p>Once your wallet hits KSh 200, cash out to M-Pesa. No extra fee to release your own money.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERRAL -->
+  <section class="section" id="referral">
+    <div class="wrap">
+      <div class="referral reveal">
+        <div>
+          <div class="section-eyebrow">Referrals & team</div>
+          <h2>Your circle pays you back.</h2>
+          <ul class="referral-list">
+            <li><span class="check">✓</span> Share your link. When someone you invited unlocks a program, a commission drops into your commission wallet.</li>
+            <li><span class="check">✓</span> Commission wallets stay separate from task wallets — earnings never mix.</li>
+            <li><span class="check">✓</span> Track a multi-level team and see who's active at each level.</li>
+          </ul>
+          <div class="level-pills">
+            <span class="level-pill active">Level 1 · Direct</span>
+            <span class="level-pill">Level 2</span>
+            <span class="level-pill">Level 3</span>
+          </div>
+        </div>
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=60" alt="Friends celebrating together">
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Your phone is the office.</h2>
+    <p>Join PesaLoop free and unlock your first program today.</p>
+    <a href="#" class="btn btn-primary btn-lg" onclick="openAuth('signup'); return false;">Create free account</a>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="logo"><span class="logo-mark">P</span> PesaLoop</div>
+    <div class="footer-links">
+      <a href="#" onclick="openAuth('login'); return false;">Login</a>
+      <a href="#" onclick="openAuth('signup'); return false;">Register</a>
+      <a href="#programs">Programs</a>
+    </div>
+    <div class="copyright">© <span id="year"></span> PesaLoop. All rights reserved.</div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="unlockOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="unlockTitle">
+    <button class="modal-close" id="unlockClose" aria-label="Close">✕</button>
+    <div class="modal-eyebrow">Unlock program</div>
+    <h3 class="modal-title" id="unlockTitle">Hotel Reviews</h3>
+    <p class="modal-desc">Send the unlock fee to the till number below, then paste your M-Pesa confirmation code. We verify every payment against Safaricom's records before a program unlocks — this usually takes a few minutes.</p>
+
+    <div class="brand-badges">
+      <span class="brand-badge badge-safaricom"><span class="chip"></span>Safaricom</span>
+      <span class="brand-badge badge-mpesa"><span class="chip"></span>M-PESA</span>
+    </div>
+
+    <div class="till-box">
+      <div>
+        <div class="label">Buy Goods Till Number</div>
+        <div class="num mono" id="tillNumber">7968544</div>
+      </div>
+      <button class="copy-btn" id="copyTillBtn" onclick="copyTill()">Copy</button>
+    </div>
+
+    <ul class="steps-mini">
+      <li><span class="n">1</span> Go to M-Pesa → Lipa na M-Pesa → Buy Goods and Services.</li>
+      <li><span class="n">2</span> Enter till number <b>7968544</b> and the unlock amount (<span id="unlockAmount">KSh 200</span>).</li>
+      <li><span class="n">3</span> Copy the confirmation code from the M-Pesa SMS and paste it below.</li>
+    </ul>
+
+    <form id="unlockForm" onsubmit="return submitUnlock(event)">
+      <div class="form-group">
+        <label for="mpesaCode">M-Pesa confirmation code</label>
+        <input type="text" id="mpesaCode" placeholder="e.g. QK7X9P2LMN" required autocomplete="off" maxlength="12">
+      </div>
+      <button type="submit" class="btn btn-primary modal-submit">Submit for verification</button>
+    </form>
+
+    <div class="pending-state" id="pendingState">
+      <div class="pending-card">
+        <div class="pending-icon">⏳</div>
+        <div>
+          <h4>Pending verification</h4>
+          <p>Code <span class="pending-code" id="pendingCodeText"></span> has been submitted. We're confirming this payment with Safaricom — your program unlocks automatically once it's verified. This isn't instant, so no need to resubmit.</p>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);">
+        <p class="mpesa-hint" style="margin-top:0;">⚠️ Demo/testing only — remove before going live. Real approval must come from checking Safaricom's Daraja API, not this button.</p>
+        <button type="button" class="btn btn-ghost" style="width:100%;" onclick="demoApproveUnlock()">Simulate verification approved (demo)</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL -->
-<div class="modal" id="globalModal">
-  <div class="modal-card">
-    <button class="close" onclick="closeModal()">✕</button>
-    <h3 id="modalTitle">Action</h3>
-    <div id="modalBody"></div>
+<div class="modal-overlay" id="authOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="modal-close" id="authClose" aria-label="Close">✕</button>
+    <div class="modal-eyebrow">PesaLoop account</div>
+    <h3 class="modal-title" id="authTitle">Create your account</h3>
+    <p class="modal-desc" id="authDesc">Sign up free to unlock programs and track your earnings.</p>
+    <div class="step-dots" id="stepDots">
+      <span class="active" data-step="1"></span>
+      <span data-step="2"></span>
+      <span data-step="3"></span>
+    </div>
+
+    <div class="auth-tabs" id="authTabs">
+      <button type="button" class="auth-tab active" id="tabSignup" onclick="switchAuthTab('signup')">Sign up</button>
+      <button type="button" class="auth-tab" id="tabLogin" onclick="switchAuthTab('login')">Log in</button>
+    </div>
+
+    <!-- STEP 1: method -->
+    <div class="auth-step active" id="authStep1">
+      <button type="button" class="google-btn" onclick="handleGoogleClick()">
+        <svg class="google-g" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 16.3 3 9.7 7.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 36.4 26.7 37 24 37c-5.2 0-9.6-3.3-11.2-8l-6.5 5C9.6 40.5 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.2 5.2C40.9 36 44 30.5 44 24c0-1.4-.1-2.7-.4-3.5z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider">or continue with email</div>
+
+      <form id="authFormStep1" onsubmit="return handleStep1Submit(event)">
+        <div class="form-group" id="nameField">
+          <label for="authName">Full name</label>
+          <input type="text" id="authName" placeholder="e.g. Faith Wanjiru" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="authEmail">Email address</label>
+          <input type="email" id="authEmail" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6">
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <button type="submit" class="btn btn-primary modal-submit" id="authSubmitBtn">Continue</button>
+      </form>
+    </div>
+
+    <!-- STEP 2: payment info (signup only) -->
+    <div class="auth-step" id="authStep2">
+      <div class="form-group">
+        <label for="mpesaNumber">M-Pesa number (international format)</label>
+        <input type="text" id="mpesaNumber" placeholder="254712345678" inputmode="numeric" maxlength="12">
+        <div class="mpesa-hint">Start with 254, no leading 0 — e.g. 0712 345 678 becomes <b>254712345678</b>. This is where payouts will be sent.</div>
+      </div>
+      <div class="auth-error" id="mpesaError"></div>
+      <button type="button" class="btn btn-primary modal-submit" onclick="handleStep2Submit()">Finish setting up</button>
+      <span class="back-link" onclick="goToAuthStep(1)">← Back</span>
+    </div>
+
+    <!-- STEP 3: success -->
+    <div class="auth-step" id="authStep3">
+      <div class="auth-success show">
+        <div class="pending-card" style="background:rgba(0,195,137,0.08); border-color:rgba(0,195,137,0.35);">
+          <div class="pending-icon" style="animation:none; color:var(--green); background:rgba(0,195,137,0.18);">✓</div>
+          <div style="text-align:left;">
+            <h4 id="authSuccessTitle">You're in!</h4>
+            <p id="authSuccessMsg">Redirecting you to your dashboard…</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-  // ======== STATE ========
-  let user = {
-    name: 'Guest',
-    email: 'guest@example.com',
-    balance: 0,
-    surveyBalance: 0,
-    aiBalance: 0,
-    surveyProgress: 0,      // count toward next 5-survey bonus
-    surveyTasksDone: 0,
-    aiTasksDone: 0,
-    subscription: false,
-    withdrawals: 0,
-    referralCode: 'PESALOOP123'
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Mobile menu
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Live payout ticker (illustrative demo data, not real transactions)
+  const names = ["Faith", "James", "Achieng", "Kevo", "Wanjiru", "Brian", "Cynthia", "Otieno", "Mercy", "Dennis"];
+  const events = [
+    { text: "earned", amt: "KSh 50", tag: "Survey bonus credited" },
+    { text: "earned", amt: "KSh 15", tag: "AI training task paid" },
+    { text: "unlocked", amt: "the Survey Program", tag: "New earner" },
+    { text: "unlocked", amt: "AI Training", tag: "Went Premium" },
+    { text: "withdrew", amt: "KSh 200", tag: "Sent to M-Pesa" },
+  ];
+  function initials(name){ return name.slice(0,2).toUpperCase(); }
+  function buildItem(){
+    const name = names[Math.floor(Math.random()*names.length)];
+    const ev = events[Math.floor(Math.random()*events.length)];
+    const div = document.createElement('div');
+    div.className = 'ticker-item';
+    div.innerHTML = `
+      <div class="avatar">${initials(name)}</div>
+      <div class="txt"><span class="who">${name} ${ev.text}</span><br><b>${ev.amt}</b> · ${ev.tag}</div>
+    `;
+    return div;
+  }
+  const track = document.getElementById('tickerTrack');
+  const batch = [];
+  for (let i = 0; i < 8; i++) batch.push(buildItem());
+  batch.forEach(el => track.appendChild(el));
+  // duplicate for seamless loop
+  batch.forEach(el => track.appendChild(el.cloneNode(true)));
+
+  // ---- Unlock modal ----
+  const overlay = document.getElementById('unlockOverlay');
+  const unlockTitle = document.getElementById('unlockTitle');
+  const unlockAmount = document.getElementById('unlockAmount');
+  const unlockForm = document.getElementById('unlockForm');
+  const pendingState = document.getElementById('pendingState');
+  const pendingCodeText = document.getElementById('pendingCodeText');
+  const mpesaCodeInput = document.getElementById('mpesaCode');
+  let currentUnlockProgram = null; // 'survey' or 'ai'
+
+  const PROGRAM_INFO = {
+    survey: { name: 'Survey Program', amount: 'KSh 200' },
+    ai: { name: 'AI Training (Premium)', amount: 'KSh 450' }
   };
 
-  // 10 surveys × 100 tasks
-  const SURVEYS = Array.from({ length: 10 }, (_, i) => ({
-    id: i+1,
-    name: `Survey ${i+1}`,
-    total: 100,
-    done: 0
-  }));
+  function openUnlock(programKey){
+    if (!getSession()) {
+      openAuth('signup');
+      return;
+    }
+    const user = getCurrentUser();
+    if (user && user[programKey + 'Unlocked']) {
+      document.getElementById(programKey === 'survey' ? 'surveyTasks' : 'aiTasks').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    currentUnlockProgram = programKey;
+    const info = PROGRAM_INFO[programKey];
+    unlockTitle.textContent = info.name;
+    unlockAmount.textContent = info.amount;
+    unlockForm.style.display = 'block';
+    pendingState.classList.remove('show');
+    mpesaCodeInput.value = '';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeUnlock(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('unlockClose').addEventListener('click', closeUnlock);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeUnlock(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUnlock(); });
 
-  // 100 AI tasks
-  let aiTasks = Array.from({ length: 100 }, (_, i) => ({ id: i+1, done: false }));
-
-  // DOM refs
-  const surveyList = document.getElementById('surveyList');
-  const aiTaskList = document.getElementById('aiTaskList');
-  const surveyBalanceDisplay = document.getElementById('surveyBalanceDisplay');
-  const aiBalanceDisplay = document.getElementById('aiBalanceDisplay');
-  const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-  const withdrawCountDisplay = document.getElementById('withdrawCountDisplay');
-  const heroBalance = document.getElementById('heroBalance');
-  const progressToWithdraw = document.getElementById('progressToWithdraw');
-  const surveyCountBadge = document.getElementById('surveyCountBadge');
-  const subscriptionStatus = document.getElementById('subscriptionStatus');
-  const userEmailDisplay = document.getElementById('userEmailDisplay');
-  const dashGreet = document.getElementById('dashGreet');
-
-  // ======== RENDER ========
-  function renderSurveys() {
-    let html = '';
-    SURVEYS.forEach(s => {
-      const pct = Math.round((s.done / s.total) * 100);
-      html += `<div class="task-item">
-        <div class="flex-between"><span>${s.name}</span><span class="text-muted">${s.done}/${s.total}</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
-      </div>`;
+  function copyTill(){
+    const till = document.getElementById('tillNumber').textContent.trim();
+    const btn = document.getElementById('copyTillBtn');
+    navigator.clipboard.writeText(till).then(() => {
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    }).catch(() => {
+      // fallback for older browsers
+      const tmp = document.createElement('input');
+      tmp.value = till;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
     });
-    surveyList.innerHTML = html;
-    const totalDone = SURVEYS.reduce((acc, s) => acc + s.done, 0);
-    surveyCountBadge.textContent = `${totalDone}/1000 tasks`;
   }
 
-  function renderAITasks() {
-    const done = aiTasks.filter(t => t.done).length;
-    const total = aiTasks.length;
-    let html = `<div class="flex-between"><span class="text-muted">Progress</span><span>${done}/${total}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${(done/total)*100}%;"></div></div>`;
-    const recent = aiTasks.slice(-5).reverse();
-    recent.forEach(t => {
-      html += `<div class="task-item" style="font-size:0.85rem;">Task #${t.id} ${t.done ? '✅' : '⏳'}</div>`;
-    });
-    aiTaskList.innerHTML = html;
+  // IMPORTANT: this form does NOT verify the code — there is no backend here.
+  // It only records that a code was submitted and shows an honest "pending
+  // verification" state. Real verification requires Safaricom's Daraja C2B
+  // confirmation API running on a server, checked against actual till
+  // transactions, before any program is unlocked. The "demo" button below
+  // exists only so you can test the post-unlock experience yourself — it
+  // must be removed before real users ever see this page.
+  function submitUnlock(e){
+    e.preventDefault();
+    const code = mpesaCodeInput.value.trim();
+    if (!code) return false;
+    pendingCodeText.textContent = code.toUpperCase();
+    unlockForm.style.display = 'none';
+    pendingState.classList.add('show');
+    return false;
   }
 
-  function updateDashboard() {
-    const total = user.surveyBalance + user.aiBalance;
-    user.balance = total;
-    heroBalance.textContent = `KSh ${total}`;
-    surveyBalanceDisplay.textContent = `KSh ${user.surveyBalance}`;
-    aiBalanceDisplay.textContent = `KSh ${user.aiBalance}`;
-    totalEarnedDisplay.textContent = `KSh ${total}`;
-    withdrawCountDisplay.textContent = user.withdrawals;
-    subscriptionStatus.textContent = user.subscription ? '✅ Active (AI)' : '❌ None';
-    userEmailDisplay.textContent = user.email;
-    dashGreet.textContent = `👋 ${user.name}`;
-    const pct = Math.min(100, (total / 200) * 100);
-    progressToWithdraw.style.width = `${pct}%`;
-    renderSurveys();
-    renderAITasks();
+  function demoApproveUnlock(){
+    const email = getSession();
+    if (!email || !currentUnlockProgram) return;
+    const users = getUsers();
+    const idx = users.findIndex(u => u.email === email);
+    if (idx === -1) return;
+    users[idx][currentUnlockProgram + 'Unlocked'] = true;
+    saveUsers(users);
+    closeUnlock();
+    renderAuthState();
+    document.getElementById(currentUnlockProgram === 'survey' ? 'surveyTasks' : 'aiTasks').scrollIntoView({ behavior: 'smooth' });
   }
 
-  // ======== SURVEY LOGIC ========
-  function doSurveyTask() {
-    let target = SURVEYS.find(s => s.done < s.total);
-    if (!target) {
-      showModal('All surveys complete', 'Great job! You’ve completed all survey tasks. Check back later for more.');
-      return;
+  // ---- Accounts (client-side only — stored in this browser's localStorage) ----
+  // NOTE: This is a demo-grade auth flow with no server, so passwords are
+  // stored in plain text in the visitor's own browser. It's fine for a
+  // prototype, but a real product needs a proper backend with hashed
+  // passwords and a real database before handling genuine user accounts.
+  const USERS_KEY = 'pesaloop_users';
+  const SESSION_KEY = 'pesaloop_session';
+
+  function getUsers(){
+    try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveUsers(users){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+  function getSession(){ return localStorage.getItem(SESSION_KEY); }
+  function setSession(email){ localStorage.setItem(SESSION_KEY, email); }
+  function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+  function nameInitials(fullName){
+    return fullName.trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
+  }
+
+  function generateReferralCode(name){
+    const base = (name.split(' ')[0] || 'user').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return base + Math.floor(1000 + Math.random() * 9000);
+  }
+
+  function formatKsh(n){
+    return 'KSh ' + Number(n || 0).toLocaleString('en-KE');
+  }
+
+  const WITHDRAWAL_THRESHOLD = 200;
+
+  function getCurrentUser(){
+    const email = getSession();
+    if (!email) return null;
+    return getUsers().find(u => u.email === email) || null;
+  }
+  function updateCurrentUser(patchFn){
+    const email = getSession();
+    const users = getUsers();
+    const idx = users.findIndex(u => u.email === email);
+    if (idx === -1) return null;
+    patchFn(users[idx]);
+    saveUsers(users);
+    return users[idx];
+  }
+
+  function renderAuthState(){
+    const email = getSession();
+    const users = getUsers();
+    const user = users.find(u => u.email === email);
+    const dashGuest = document.getElementById('dashGuest');
+    const dashUser = document.getElementById('dashUser');
+    const navLoginBtn = document.getElementById('navLoginBtn');
+    const navSignupBtn = document.getElementById('navSignupBtn');
+    const phoneLabel = document.getElementById('phoneLabel');
+    const phoneAmt = document.getElementById('phoneAmt');
+
+    if (user) {
+      dashGuest.style.display = 'none';
+      dashUser.style.display = 'block';
+      document.getElementById('dashAvatar').textContent = nameInitials(user.name) || 'P';
+      document.getElementById('dashName').textContent = user.name;
+      document.getElementById('dashEmail').textContent = user.email;
+      navLoginBtn.style.display = 'none';
+      navSignupBtn.textContent = user.name.split(' ')[0];
+      navSignupBtn.onclick = (e) => { e.preventDefault(); window.location.hash = '#dashboard'; };
+      if (phoneLabel) phoneLabel.textContent = user.name.split(' ')[0] + "'s wallet";
+      if (phoneAmt) phoneAmt.textContent = formatKsh(user.balance || 0);
+
+      // Wallets always start at zero and only move if you wire up real task
+      // completion / referral crediting logic on a backend — nothing here
+      // fabricates earnings.
+      document.getElementById('statBalance').textContent = formatKsh(user.balance || 0);
+      document.getElementById('statReferralBalance').textContent = formatKsh(user.referralBalance || 0);
+      document.getElementById('statReferralCount').textContent = (user.referrals || []).length;
+      document.getElementById('statMpesa').textContent = user.mpesa || 'Not set';
+      document.getElementById('referralCode').textContent =
+        window.location.origin + window.location.pathname + '?ref=' + user.referralCode;
+
+      document.getElementById('statSurveys').textContent = (user.surveysCompleted || 0) + ' / 10';
+      document.getElementById('statSurveysHint').textContent = user.surveyUnlocked ? 'Every 5 finished adds KSh 50' : 'Unlock the Survey Program';
+      document.getElementById('statAiTasks').textContent = (user.aiTasksCompleted || 0) + ' / 100';
+      document.getElementById('statAiHint').textContent = user.aiUnlocked ? 'KSh 15 per task' : 'Unlock AI Training';
+
+      const refList = user.referrals || [];
+      const refLog = document.getElementById('referralLog');
+      const refEmpty = document.getElementById('referralEmpty');
+      refLog.innerHTML = '';
+      if (refList.length === 0) {
+        refEmpty.style.display = 'block';
+      } else {
+        refEmpty.style.display = 'none';
+        refList.forEach(r => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${r.name}</span><span>${r.date}</span>`;
+          refLog.appendChild(li);
+        });
+      }
+
+      renderSupportLog(user.email);
+      renderWithdrawal(user);
+      renderSurveySection(user);
+      renderAiSection(user);
+    } else {
+      dashGuest.style.display = 'flex';
+      dashUser.style.display = 'none';
+      navLoginBtn.style.display = 'inline-flex';
+      navSignupBtn.textContent = 'Get started';
+      navSignupBtn.onclick = (e) => { e.preventDefault(); openAuth('signup'); };
+      if (phoneLabel) phoneLabel.textContent = 'Total wallet';
+      if (phoneAmt) phoneAmt.textContent = 'KSh 4,850';
+      document.getElementById('surveyTasks').style.display = 'none';
+      document.getElementById('aiTasks').style.display = 'none';
     }
-    target.done++;
-    user.surveyTasksDone++;
-    user.surveyProgress++;
-
-    if (user.surveyProgress >= 5) {
-      user.surveyBalance += 50;
-      user.surveyProgress = 0;
-      showModal('🎉 Bonus!', 'You completed 5 surveys! +50 KSh added to your survey balance.');
-    }
-    updateDashboard();
   }
 
-  // ======== AI LOGIC ========
-  function handleAISubscription() {
-    if (user.subscription) {
-      showModal('Already subscribed', 'You have an active AI subscription. Enjoy the tasks!');
-      return;
+  // ---- Withdrawal (honest single threshold, no fee to release your money) ----
+  function renderWithdrawal(user){
+    const balance = user.balance || 0;
+    document.getElementById('withdrawBalance').textContent = formatKsh(balance);
+    const pct = Math.min(100, Math.round((balance / WITHDRAWAL_THRESHOLD) * 100));
+    document.getElementById('withdrawProgressFill').style.width = pct + '%';
+    const btn = document.getElementById('withdrawBtn');
+    const hint = document.getElementById('withdrawHint');
+    const successEl = document.getElementById('withdrawSuccess');
+
+    if (user.withdrawal && user.withdrawal.status === 'pending') {
+      btn.style.display = 'none';
+      hint.style.display = 'none';
+      successEl.classList.add('show');
+      document.getElementById('withdrawStatusMsg').textContent =
+        `Requested ${formatKsh(user.withdrawal.amount)} to ${user.withdrawal.mpesa} on ${user.withdrawal.date}. We're processing this — you'll be notified once it's sent.`;
+    } else if (balance >= WITHDRAWAL_THRESHOLD) {
+      btn.style.display = 'block';
+      btn.disabled = false;
+      hint.style.display = 'block';
+      hint.textContent = 'You can withdraw your full balance now — no fee to release your own money.';
+      successEl.classList.remove('show');
+    } else {
+      btn.style.display = 'block';
+      btn.disabled = true;
+      hint.style.display = 'block';
+      hint.textContent = `Earn KSh ${WITHDRAWAL_THRESHOLD - balance} more to unlock withdrawals.`;
+      successEl.classList.remove('show');
     }
-    showModal('🔓 Subscribe to AI Training', `
-      <p>Pay <strong>450 KSh</strong> to M-Pesa Till <span class="mono" style="background:#0a1f1a; padding:4px 12px; border-radius:40px;">7968544</span></p>
-      <p>One-time payment — unlocks 100 AI tasks.</p>
-      <button class="btn" onclick="confirmSubscription()">✅ Confirm payment</button>
-      <p class="text-muted" style="font-size:0.8rem; margin-top:8px;">We'll verify with Safaricom (simulated).</p>
-    `);
   }
 
-  function confirmSubscription() {
-    user.subscription = true;
-    updateDashboard();
-    showModal('✅ Subscribed!', 'You now have access to 100 AI training tasks. Earn 15 KSh per ~10-min task.');
-  }
-
-  function doAITask() {
-    if (!user.subscription) {
-      showModal('Subscription needed', 'Please subscribe to the AI Training program first (450 KSh).');
-      return;
-    }
-    const next = aiTasks.find(t => !t.done);
-    if (!next) {
-      showModal('All AI tasks done', 'You’ve completed all 100 AI tasks! More coming soon.');
-      return;
-    }
-    next.done = true;
-    user.aiBalance += 15;
-    user.balance += 15;
-    updateDashboard();
-  }
-
-  // ======== WITHDRAWAL ========
-  function handleWithdraw() {
-    if (user.balance < 200) {
-      showModal('Withdrawal', 'Minimum withdrawal is KSh 200. Keep earning!');
-      return;
-    }
-    // No fee — we cover costs
+  function requestWithdrawal(){
+    const user = getCurrentUser();
+    if (!user || (user.balance || 0) < WITHDRAWAL_THRESHOLD) return;
     const amount = user.balance;
-    user.balance = 0;
-    user.surveyBalance = 0;
-    user.aiBalance = 0;
-    user.withdrawals++;
-    updateDashboard();
-    showModal('✅ Withdrawal sent!', `KSh ${amount} sent to your M-Pesa (${user.email || 'registered number'}). No fees deducted.`);
+    updateCurrentUser(u => {
+      u.withdrawal = { amount, mpesa: u.mpesa, status: 'pending', date: new Date().toLocaleDateString('en-KE') };
+      u.balance = 0; // moved from wallet into a pending payout, not spent or charged
+    });
+    renderAuthState();
   }
 
-  // ======== MODAL ========
-  function showModal(title, bodyHTML) {
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalBody').innerHTML = bodyHTML;
-    document.getElementById('globalModal').classList.add('open');
-  }
-  function closeModal() {
-    document.getElementById('globalModal').classList.remove('open');
-  }
-  window.onclick = function(e) {
-    if (e.target === document.getElementById('globalModal')) closeModal();
-  }
-
-  // ======== AUTH (mock) ========
-  function openAuth() {
-    showModal('🔐 Sign in / Sign up', `
-      <p>Demo mode — use any email to start earning.</p>
-      <input type="text" id="authNameInput" placeholder="Your name" value="Faith" style="margin:6px 0;">
-      <input type="email" id="authEmailInput" placeholder="Email" value="faith@example.com" style="margin:6px 0;">
-      <button class="btn" onclick="mockAuth()">Continue</button>
-      <p class="text-muted" style="font-size:0.75rem; margin-top:8px;">No password needed for demo.</p>
-    `);
+  // ---- Survey Program ----
+  function renderSurveySection(user){
+    const section = document.getElementById('surveyTasks');
+    if (!user.surveyUnlocked) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    const grid = document.getElementById('surveyGrid');
+    grid.innerHTML = '';
+    (user.surveyProgress || []).forEach((progress, i) => {
+      const done = progress >= 100;
+      const card = document.createElement('div');
+      card.className = 'survey-card' + (done ? ' completed' : '');
+      card.innerHTML = `
+        <h4>Survey ${i + 1}</h4>
+        <div class="sc-meta">${progress} / 100 tasks ${done ? '<span class="done-tag">· Completed ✓</span>' : ''}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;"></div></div>
+        <button ${done ? 'disabled' : ''} onclick="completeSurveyBatch(${i})">${done ? 'Completed' : 'Complete 10 tasks'}</button>
+      `;
+      grid.appendChild(card);
+    });
   }
 
-  function mockAuth() {
-    const name = document.getElementById('authNameInput').value || 'Earner';
-    const email = document.getElementById('authEmailInput').value || 'earner@demo.com';
-    user.name = name;
-    user.email = email;
-    if (!user.referralCode) user.referralCode = 'PESALOOP' + Math.floor(1000+Math.random()*9000);
-    updateDashboard();
-    closeModal();
-    document.getElementById('loginBtn').textContent = user.name;
-    document.getElementById('signupBtn').textContent = 'Account';
-    showModal('Welcome!', `You're logged in as ${user.name}. Start earning with surveys and AI tasks.`);
+  function completeSurveyBatch(index){
+    const user = getCurrentUser();
+    if (!user || !user.surveyUnlocked) return;
+    let awardedBonus = 0;
+    updateCurrentUser(u => {
+      const progress = u.surveyProgress || [0,0,0,0,0,0,0,0,0,0];
+      const wasDone = progress[index] >= 100;
+      if (wasDone) return;
+      progress[index] = Math.min(100, progress[index] + 10);
+      u.surveyProgress = progress;
+      if (progress[index] >= 100) {
+        u.surveysCompleted = (u.surveysCompleted || 0) + 1;
+        const tiersEarned = Math.floor(u.surveysCompleted / 5);
+        if (tiersEarned > (u.surveyBonusTiersAwarded || 0)) {
+          const newTiers = tiersEarned - (u.surveyBonusTiersAwarded || 0);
+          awardedBonus = newTiers * 50;
+          u.balance = (u.balance || 0) + awardedBonus;
+          u.surveyBonusTiersAwarded = tiersEarned;
+        }
+      }
+    });
+    renderAuthState();
+    if (awardedBonus > 0) {
+      alert(`🎉 Bonus unlocked! KSh ${awardedBonus} added to your task wallet for finishing 5 surveys.`);
+    }
   }
 
-  // ======== QUICK ACTION BUTTONS ========
-  // Add AI task button to stats area
-  const aiQuick = document.createElement('button');
-  aiQuick.textContent = '⚡ Do AI Task (15 KSh)';
-  aiQuick.className = 'btn btn-outline';
-  aiQuick.style.marginTop = '8px';
-  aiQuick.onclick = doAITask;
-  document.querySelector('.grid-2 .stat:nth-child(2)').appendChild(aiQuick);
+  // ---- AI Training (Premium) ----
+  let aiTaskInProgress = false;
+  function renderAiSection(user){
+    const section = document.getElementById('aiTasks');
+    if (!user.aiUnlocked) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    const completed = user.aiTasksCompleted || 0;
+    document.getElementById('aiTasksCompletedLabel').textContent = completed + ' / 100';
+    document.getElementById('aiEarnedLabel').textContent = formatKsh(completed * 15);
+    document.getElementById('aiProgressFill').style.width = completed + '%';
+    const btn = document.getElementById('aiTaskBtn');
+    if (completed >= 100) {
+      btn.disabled = true;
+      btn.textContent = 'All 100 tasks completed';
+      document.getElementById('aiTaskStatus').textContent = 'You\'ve finished every available AI training task.';
+    } else if (!aiTaskInProgress) {
+      btn.disabled = false;
+      btn.textContent = 'Start next task (~10 min)';
+    }
+  }
 
-  const surveyQuick = document.createElement('button');
-  surveyQuick.textContent = '📝 Do Survey Task';
-  surveyQuick.className = 'btn btn-outline';
-  surveyQuick.style.marginTop = '8px';
-  surveyQuick.onclick = doSurveyTask;
-  document.querySelector('.grid-2 .stat:first-child').appendChild(surveyQuick);
+  function startAiTask(){
+    const user = getCurrentUser();
+    if (!user || !user.aiUnlocked || aiTaskInProgress) return;
+    if ((user.aiTasksCompleted || 0) >= 100) return;
+    aiTaskInProgress = true;
+    const btn = document.getElementById('aiTaskBtn');
+    const status = document.getElementById('aiTaskStatus');
+    btn.disabled = true;
+    let secondsLeft = 5; // demo-compressed stand-in for the real ~10 minute task
+    btn.textContent = `In progress… (${secondsLeft}s demo)`;
+    const timer = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft > 0) {
+        btn.textContent = `In progress… (${secondsLeft}s demo)`;
+      } else {
+        clearInterval(timer);
+        updateCurrentUser(u => {
+          u.aiTasksCompleted = (u.aiTasksCompleted || 0) + 1;
+          u.balance = (u.balance || 0) + 15;
+        });
+        aiTaskInProgress = false;
+        status.textContent = 'Task complete — KSh 15 added to your task wallet.';
+        renderAuthState();
+      }
+    }, 1000);
+  }
 
-  // ======== INIT ========
-  updateDashboard();
-  setTimeout(() => {
-    showModal('👋 Welcome to PesaLoop', `
-      <p>Complete surveys to earn 50 KSh per 5 tasks. Subscribe to AI Training (450 KSh) to unlock premium tasks and earn 15 KSh per ~10-min task.</p>
-      <p><strong>Withdrawal:</strong> min 200 KSh, no fee.</p>
-      <p>Trusted by Handshake AI, Outlier, Prolific, and more.</p>
-      <button class="btn" onclick="closeModal()">Start earning</button>
-    `);
-  }, 500);
+  function logoutUser(){
+    clearSession();
+    renderAuthState();
+  }
+
+  function copyReferralLink(){
+    const link = document.getElementById('referralCode').textContent.trim();
+    const btn = document.getElementById('copyRefBtn');
+    navigator.clipboard.writeText(link).then(() => {
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = 'Copy link'; }, 1800);
+    });
+  }
+
+  // ---- Support tickets (stored locally, no live backend) ----
+  const SUPPORT_KEY = 'pesaloop_support_tickets';
+  function getSupportTickets(){
+    try { return JSON.parse(localStorage.getItem(SUPPORT_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveSupportTickets(list){ localStorage.setItem(SUPPORT_KEY, JSON.stringify(list)); }
+
+  function renderSupportLog(email){
+    const tickets = getSupportTickets().filter(t => t.email === email);
+    const log = document.getElementById('supportLog');
+    log.innerHTML = '';
+    tickets.slice().reverse().forEach(t => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${t.subject}</span><span>#${t.ref}</span>`;
+      log.appendChild(li);
+    });
+  }
+
+  function handleSupportSubmit(e){
+    e.preventDefault();
+    const email = getSession();
+    const subject = document.getElementById('supportSubject').value.trim();
+    const message = document.getElementById('supportMessage').value.trim();
+    if (!subject || !message) return false;
+    const ref = 'SP' + Date.now().toString().slice(-6);
+    const tickets = getSupportTickets();
+    tickets.push({ email, subject, message, ref, date: new Date().toLocaleDateString('en-KE') });
+    saveSupportTickets(tickets);
+
+    document.getElementById('supportForm').style.display = 'none';
+    document.getElementById('supportRefId').textContent = '#' + ref;
+    document.getElementById('supportSuccess').classList.add('show');
+    renderSupportLog(email);
+
+    setTimeout(() => {
+      document.getElementById('supportForm').reset();
+      document.getElementById('supportForm').style.display = 'block';
+      document.getElementById('supportSuccess').classList.remove('show');
+    }, 4000);
+    return false;
+  }
+
+  // ---- Auth modal (multi-step: method -> payment info -> success) ----
+  const authOverlay = document.getElementById('authOverlay');
+  const authFormStep1 = document.getElementById('authFormStep1');
+  const authError = document.getElementById('authError');
+  const nameField = document.getElementById('nameField');
+  const authName = document.getElementById('authName');
+  const authEmail = document.getElementById('authEmail');
+  const authPassword = document.getElementById('authPassword');
+  const authSubmitBtn = document.getElementById('authSubmitBtn');
+  let authMode = 'signup';
+  let pendingUser = null; // holds { name, email, password? } between steps
+
+  function openAuth(mode){
+    switchAuthTab(mode || 'signup');
+    goToAuthStep(1);
+    authOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAuth(){
+    authOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('authClose').addEventListener('click', closeAuth);
+  authOverlay.addEventListener('click', (e) => { if (e.target === authOverlay) closeAuth(); });
+
+  function goToAuthStep(step){
+    document.querySelectorAll('.auth-step').forEach(el => el.classList.remove('active'));
+    document.getElementById('authStep' + step).classList.add('active');
+    document.querySelectorAll('#stepDots span').forEach(dot => {
+      dot.classList.toggle('active', Number(dot.dataset.step) <= step);
+    });
+    document.getElementById('authTabs').style.display = step === 1 ? 'flex' : 'none';
+  }
+
+  function switchAuthTab(mode){
+    authMode = mode;
+    authError.classList.remove('show');
+    authFormStep1.reset();
+    document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
+    document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+    if (mode === 'signup') {
+      document.getElementById('authTitle').textContent = 'Create your account';
+      document.getElementById('authDesc').textContent = 'Sign up free to unlock programs and track your earnings.';
+      nameField.style.display = 'block';
+      authName.setAttribute('required', 'required');
+      authSubmitBtn.textContent = 'Continue';
+      document.getElementById('stepDots').style.display = 'flex';
+    } else {
+      document.getElementById('authTitle').textContent = 'Welcome back';
+      document.getElementById('authDesc').textContent = 'Log in with the email you signed up with.';
+      nameField.style.display = 'none';
+      authName.removeAttribute('required');
+      authSubmitBtn.textContent = 'Log in';
+      document.getElementById('stepDots').style.display = 'none'; // login is a single step
+    }
+  }
+
+  function showAuthError(msg){
+    authError.textContent = msg;
+    authError.classList.add('show');
+  }
+
+  function finishAuthSuccess(user, isNew){
+    setSession(user.email);
+    goToAuthStep(3);
+    document.getElementById('authSuccessTitle').textContent =
+      (isNew ? 'Welcome, ' : 'Welcome back, ') + user.name.split(' ')[0] + '!';
+    document.getElementById('authSuccessMsg').textContent = 'Heading to your dashboard…';
+    renderAuthState();
+    setTimeout(() => {
+      closeAuth();
+      document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+    }, 1100);
+  }
+
+  // Step 1: email/password (or the name+email captured after Google)
+  function handleStep1Submit(e){
+    e.preventDefault();
+    authError.classList.remove('show');
+    const email = authEmail.value.trim().toLowerCase();
+    const password = authPassword.value;
+    const users = getUsers();
+
+    if (authMode === 'signup') {
+      const name = authName.value.trim();
+      if (!name) { showAuthError('Please enter your name.'); return false; }
+      if (users.some(u => u.email === email)) {
+        showAuthError('An account with this email already exists — try logging in instead.');
+        return false;
+      }
+      pendingUser = { name, email, password, provider: 'email' };
+      goToAuthStep(2); // collect M-Pesa number before finishing
+    } else {
+      const user = users.find(u => u.email === email);
+      if (!user || (user.provider !== 'google' && user.password !== password)) {
+        showAuthError('That email and password combination doesn\'t match an account.');
+        return false;
+      }
+      finishAuthSuccess(user, false);
+    }
+    return false;
+  }
+
+  // Step 2: M-Pesa number, then create the account for real
+  function handleStep2Submit(){
+    const mpesaError = document.getElementById('mpesaError');
+    mpesaError.classList.remove('show');
+    const mpesa = document.getElementById('mpesaNumber').value.trim();
+    const valid = /^254\d{9}$/.test(mpesa);
+    if (!valid) {
+      mpesaError.textContent = 'Enter a valid number starting with 254, followed by 9 digits (e.g. 254712345678).';
+      mpesaError.classList.add('show');
+      return;
+    }
+    const users = getUsers();
+    const newUser = {
+      name: pendingUser.name,
+      email: pendingUser.email,
+      password: pendingUser.password || null,
+      provider: pendingUser.provider,
+      mpesa,
+      balance: 0,            // wallets always start at zero
+      referralBalance: 0,
+      referralCode: generateReferralCode(pendingUser.name),
+      referrals: [],
+      surveyUnlocked: false,
+      surveyProgress: [0,0,0,0,0,0,0,0,0,0], // 10 surveys, 0-100 each
+      surveysCompleted: 0,
+      surveyBonusTiersAwarded: 0,
+      aiUnlocked: false,
+      aiTasksCompleted: 0,
+      withdrawal: null // { amount, mpesa, status: 'pending', date }
+    };
+    users.push(newUser);
+    saveUsers(users);
+    finishAuthSuccess(newUser, true);
+  }
+
+  // ---- Google Sign-In scaffold ----
+  // Replace this with your own OAuth Client ID from Google Cloud Console
+  // (APIs & Services > Credentials > OAuth client ID > Web application).
+  // Until a real ID is set, the button explains it isn't configured instead
+  // of faking a login.
+  const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+
+  function handleGoogleClick(){
+    if (GOOGLE_CLIENT_ID.startsWith('YOUR_GOOGLE_CLIENT_ID')) {
+      showAuthError('Google sign-in isn\'t configured yet on this site — add a real Google OAuth Client ID in the code, or continue with email below.');
+      return;
+    }
+    if (window.google && google.accounts && google.accounts.id) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential
+      });
+      google.accounts.id.prompt();
+    } else {
+      showAuthError('Google sign-in library failed to load. Check your internet connection and try again.');
+    }
+  }
+
+  function handleGoogleCredential(response){
+    // Client-side only decode of the ID token payload to read name/email.
+    // In a real app, send response.credential to your backend and verify
+    // it with Google before trusting it.
+    try {
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      const email = (payload.email || '').toLowerCase();
+      const name = payload.name || email.split('@')[0];
+      const users = getUsers();
+      const existing = users.find(u => u.email === email);
+      if (existing) {
+        finishAuthSuccess(existing, false);
+      } else {
+        pendingUser = { name, email, password: null, provider: 'google' };
+        goToAuthStep(2);
+      }
+    } catch {
+      showAuthError('Something went wrong reading your Google account. Please try email instead.');
+    }
+  }
+
+  // Render whatever session already exists on page load
+  renderAuthState();
 </script>
+
 </body>
 </html>
